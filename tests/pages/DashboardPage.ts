@@ -7,6 +7,10 @@ export class DashboardPage {
 
 	constructor(public readonly page: Page) {}
 
+	async open() {
+		await this.page.goto("/");
+	}
+
 	readonly clubCard = (title: string): Locator =>
 		this.page.getByRole("heading", { name: title });
 

@@ -18,6 +18,10 @@ export class CreateClubPage {
 
 	constructor(public readonly page: Page) {}
 
+	async open() {
+		await this.page.goto("/clubs/create");
+	}
+
 	async expectVisible() {
 		await test.step("Проверить отображение формы создания клуба", async () => {
 			await expect(this.heading).toBeVisible();

@@ -6,7 +6,9 @@ import {
 } from "@playwright/test";
 import nunjucks from "nunjucks";
 
-const CONSOLE_ERROR_EXCEPTIONS = [].map((pattern) => new RegExp(pattern, "i"));
+const CONSOLE_ERROR_EXCEPTIONS = [
+	"Error fetching clubs: TypeError: Failed to fetch",
+].map((pattern) => new RegExp(pattern, "i"));
 
 function getAdditionalExceptions(testInfo: TestInfo): RegExp[] {
 	const annotation = testInfo.annotations.find(

@@ -37,7 +37,17 @@
 	},
 	"overrides": [
 		{
-			"includes": ["fixtures/base.ts"],
+			"includes": ["fixtures/base.ts", "fixtures/pages.ts"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedFunctionParameters": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["tests/**/*.spec.ts"],
 			"linter": {
 				"rules": {
 					"correctness": {

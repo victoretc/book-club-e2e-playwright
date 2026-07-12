@@ -1,9 +1,14 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../fixtures/base";
 
-test("Создать клуб", async ({ createClubPage, dashboardPage }) => {
+test("Создать клуб", async ({
+	authorizedUser,
+	createClubPage,
+	dashboardPage,
+}) => {
 	const bookTitle = faker.book.title();
 
+	await createClubPage.open();
 	await createClubPage.expectVisible();
 
 	await createClubPage.fillForm({
@@ -14,12 +19,15 @@ test("Создать клуб", async ({ createClubPage, dashboardPage }) => {
 		telegramChatLink: `https://t.me/${faker.internet.username()}`,
 	});
 	await createClubPage.submit();
-
 	await dashboardPage.searchClub(bookTitle);
 	await dashboardPage.expectClubVisible(bookTitle);
 });
 
-test("Создать клуб - Пустая форма", async ({ createClubPage }) => {
+test("Создать клуб - Пустая форма", async ({
+	authorizedUser,
+	createClubPage,
+}) => {
+	await createClubPage.open();
 	await createClubPage.expectVisible();
 	await createClubPage.submit();
 	await createClubPage.expectValidationErrors();
@@ -34,7 +42,8 @@ test.describe("Создать клуб — Невалидный Telegram", () =>
 	];
 
 	invalidLinks.forEach((link) => {
-		test(`"${link}"`, async ({ createClubPage }) => {
+		test(`"${link}"`, async ({ authorizedUser, createClubPage }) => {
+			await createClubPage.open();
 			await createClubPage.expectVisible();
 
 			await createClubPage.fillForm({
@@ -50,7 +59,12 @@ test.describe("Создать клуб — Невалидный Telegram", () =>
 	});
 });
 
-test("Создать клуб — Отмена", async ({ createClubPage, page }) => {
+test("Создать клуб — Отмена", async ({
+	authorizedUser,
+	createClubPage,
+	page,
+}) => {
+	await createClubPage.open();
 	await createClubPage.expectVisible();
 	await createClubPage.cancel();
 	await expect(page).toHaveURL(/\/$/);
