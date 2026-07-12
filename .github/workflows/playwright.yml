@@ -17,6 +17,16 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+    
+    - name: Clone app repo
+      uses: actions/checkout@v4
+      with:
+        repository: victoretc/book-club
+        path: book-club
+
+    - name: Start app
+      working-directory: book-club
+      run: docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --build --wait
 
     - name: Install dependencies
       run: npm ci
