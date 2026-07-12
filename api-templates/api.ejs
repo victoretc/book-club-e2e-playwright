@@ -1,0 +1,29 @@
+<%
+const { utils, route, config, modelTypes } = it;
+const { _, pascalCase, require } = utils;
+const apiClassName = pascalCase(route.moduleName);
+const routes = route.routes;
+const dataContracts = _.map(modelTypes, "name");
+%>
+
+import type { APIRequestContext, APIResponse } from "@playwright/test";
+<% if (config.enumStyle === "union") { %>
+import { type ContentType, type RequestOptions, ApiError } from "./<%~ config.fileNames.httpClient %>";
+<% } else { %>
+import { ContentType, type RequestOptions, ApiError } from "./<%~ config.fileNames.httpClient %>";
+<% } %>
+<% if (dataContracts.length) { %>
+import { <%~ dataContracts.join(", ") %> } from "./<%~ config.fileNames.dataContracts %>"
+<% } %>
+
+export class <%~ apiClassName %> {
+    private request: APIRequestContext;
+
+    constructor(request: APIRequestContext) {
+        this.request = request;
+    }
+
+    <% for (const route of routes) { %>
+        <%~ includeFile('./procedure-call.ejs', { ...it, route }) %>
+    <% } %>
+}

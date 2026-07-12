@@ -1,0 +1,103 @@
+<%
+const { utils, route, config } = it;
+const { requestBodyInfo, responseBodyInfo, specificArgNameResolver } = route;
+const { _, getInlineParseContent, getParseContent, parseSchema, getComponentByRef, require } = utils;
+const { parameters, path, method, payload, query, formData, security, requestParams } = route.request;
+const { type, errorType, contentTypes } = route.response;
+const { HTTP_CLIENT, RESERVED_REQ_PARAMS_ARG_NAMES } = config.constants;
+const routeDocs = includeFile("./route-docs", { config, route, utils });
+const queryName = (query && query.name) || "query";
+const pathParams = _.values(parameters);
+const pathParamsNames = _.map(pathParams, "name");
+
+const extractedRequestParamsName = pathParams.length
+    ? query
+        ? "{ " + _.join(pathParamsNames, ", ") + ", ..." + queryName + " }"
+        : "{ " + _.join(pathParamsNames, ", ") + " }"
+    : queryName;
+
+const rawWrapperArgs = config.extractRequestParams ?
+    _.compact([
+        requestParams && {
+          name: extractedRequestParamsName,
+          optional: route.request.requestParamsOptional,
+          type: getInlineParseContent(requestParams),
+          defaultValue: route.request.requestParamsOptional ? '{}' : undefined,
+        },
+        ...(!requestParams ? pathParams : []),
+        payload,
+    ]) :
+    _.compact([
+        ...pathParams,
+        query,
+        payload,
+    ])
+
+const wrapperArgs = _
+    .sortBy(rawWrapperArgs, [o => o.optional])
+    .map(function(arg) {
+        var suffix = !arg.defaultValue && arg.optional ? '?' : '';
+        var defaultSuffix = arg.defaultValue ? " = " + arg.defaultValue : "";
+        return arg.name + suffix + ": " + arg.type + defaultSuffix;
+    })
+    .join(', ')
+
+const bodyTmpl = _.get(payload, "name") || null;
+const queryTmpl = (query != null && queryName) || null;
+
+const bodyLine = bodyTmpl ? "data: " + bodyTmpl + "," : "";
+const queryLine = queryTmpl ? "params: " + queryTmpl + "," : "";
+
+const isValidIdentifier = (name) => /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name);
+
+const responseType = type;
+const isVoid = !responseType || responseType === "void";
+const methodArgs = wrapperArgs ? wrapperArgs + ", opts?: RequestOptions" : "opts?: RequestOptions";
+const methodName = route.routeName.usage;
+const rawMethodName = methodName + "Raw";
+
+%>
+/**
+<%~ routeDocs.description %>
+
+ *<% /* Here you can add some other JSDoc tags */ %>
+
+<%~ routeDocs.lines %>
+
+ */
+<% if (isValidIdentifier(methodName)) { %><%~ methodName %><% } else { %>"<%~ methodName %>"<% } %> = async (<%~ methodArgs %>): Promise<<%~ isVoid ? "void" : responseType %>> => {
+    const response = await this.request.fetch(`<%~ path %>`, {
+        method: "<%~ _.upperCase(method) %>",
+        <%~ bodyLine %>
+        <%~ queryLine %>
+        timeout: opts?.timeout,
+        headers: opts?.headers,
+    });
+<% if (isVoid) { %>
+    if (opts?.validateStatus !== false && response.status() >= 400) {
+        throw new ApiError(response.status(), await response.text());
+    }
+<% } else { %>
+    if (opts?.validateStatus !== false && response.status() >= 400) {
+        throw new ApiError(response.status(), await response.text());
+    }
+    return response.json();
+<% } %>
+};
+
+/**
+<%~ routeDocs.description %>
+
+ * @raw
+
+<%~ routeDocs.lines %>
+
+ */
+<% if (isValidIdentifier(rawMethodName)) { %><%~ rawMethodName %><% } else { %>"<%~ rawMethodName %>"<% } %> = (<%~ methodArgs %>): Promise<APIResponse> =>
+    this.request.fetch(`<%~ path %>`, {
+        method: "<%~ _.upperCase(method) %>",
+        <%~ bodyLine %>
+        <%~ queryLine %>
+        timeout: opts?.timeout,
+        headers: opts?.headers,
+    })

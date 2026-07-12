@@ -1,0 +1,42 @@
+<%
+const { config } = it;
+%>
+
+<% if (config.enumStyle === "const") { %>
+export const ContentType = {
+  Json: "application/json",
+  FormData: "multipart/form-data",
+  UrlEncoded: "application/x-www-form-urlencoded",
+  Text: "text/plain",
+} as const;
+export type ContentType = (typeof ContentType)[keyof typeof ContentType];
+<% } else if (config.enumStyle === "union") { %>
+export type ContentType = "application/json" | "multipart/form-data" | "application/x-www-form-urlencoded" | "text/plain";
+<% } else if (config.enumStyle === "const-enum") { %>
+export const enum ContentType {
+  Json = "application/json",
+  FormData = "multipart/form-data",
+  UrlEncoded = "application/x-www-form-urlencoded",
+  Text = "text/plain",
+}
+<% } else { %>
+export enum ContentType {
+  Json = "application/json",
+  FormData = "multipart/form-data",
+  UrlEncoded = "application/x-www-form-urlencoded",
+  Text = "text/plain",
+}
+<% } %>
+
+export type RequestOptions = {
+  timeout?: number;
+  headers?: Record<string, string>;
+  validateStatus?: boolean;
+};
+
+export class ApiError extends Error {
+  constructor(public status: number, body: string) {
+    super(`API error ${status}: ${body}`);
+    this.name = "ApiError";
+  }
+}
