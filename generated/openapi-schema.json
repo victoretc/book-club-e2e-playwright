@@ -1,2010 +1,1901 @@
 {
-    "openapi": "3.0.3",
-    "info": {
-        "title": "Book Club API",
-        "version": "0.0.0 (v1)",
-        "description": "So great, needs no docs"
-    },
-    "paths": {
-        "/api/v1/auth/code/": {
-            "post": {
-                "operationId": "authCodeCreate",
-                "tags": [
-                    "auth"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RequestCodeRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RequestCodeRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RequestCodeRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/RequestCode"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/auth/code/retrieve/": {
-            "post": {
-                "operationId": "authCodeRetrieveCreate",
-                "description": "Возвращает последний неиспользованный код для указанного email. Только для DEBUG.",
-                "summary": "Получить код подтверждения (тест)",
-                "tags": [
-                    "auth"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RetrieveCodeRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RetrieveCodeRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RetrieveCodeRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/RetrieveCodeResponse"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/auth/code/verify/": {
-            "post": {
-                "operationId": "authCodeVerifyCreate",
-                "tags": [
-                    "auth"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/VerifyCodeRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/VerifyCodeRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/VerifyCodeRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/VerifyCode"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/auth/logout/": {
-            "post": {
-                "operationId": "authLogoutCreate",
-                "description": "Takes a token and blacklists it. Must be used with the\n`rest_framework_simplejwt.token_blacklist` app installed.",
-                "tags": [
-                    "auth"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenBlacklistRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenBlacklistRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenBlacklistRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "No response body"
-                    }
-                }
-            }
-        },
-        "/api/v1/auth/token/": {
-            "post": {
-                "operationId": "authTokenCreate",
-                "description": "Takes a set of user credentials and returns an access and refresh JSON web\ntoken pair to prove the authentication of those credentials.",
-                "tags": [
-                    "auth"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenObtainPairWithProperMessageRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenObtainPairWithProperMessageRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenObtainPairWithProperMessageRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/TokenObtainPairWithProperMessage"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/auth/token/refresh/": {
-            "post": {
-                "operationId": "authTokenRefreshCreate",
-                "description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.",
-                "tags": [
-                    "auth"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenRefreshRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenRefreshRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenRefreshRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/TokenRefresh"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/clubs/": {
-            "get": {
-                "operationId": "clubsList",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "membership",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "required": false,
-                        "in": "query",
-                        "description": "A page number within the paginated result set.",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page_size",
-                        "required": false,
-                        "in": "query",
-                        "description": "Number of results to return per page.",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "in": "query",
-                        "name": "search",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PaginatedClubList"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "post": {
-                "operationId": "clubsCreate",
-                "tags": [
-                    "clubs"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ClubRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ClubRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ClubRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Club"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/clubs/{id}/": {
-            "get": {
-                "operationId": "clubsRetrieve",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Club.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Club"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "put": {
-                "operationId": "clubsUpdate",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Club.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ClubRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ClubRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ClubRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Club"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "patch": {
-                "operationId": "clubsPartialUpdate",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Club.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedClubRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedClubRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedClubRequest"
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Club"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "delete": {
-                "operationId": "clubsDestroy",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Club.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No response body"
-                    }
-                }
-            }
-        },
-        "/api/v1/clubs/{id}/members/me/": {
-            "post": {
-                "operationId": "clubsMembersMeCreate",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Club.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No response body"
-                    }
-                }
-            },
-            "delete": {
-                "operationId": "clubsMembersMeDestroy",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Club.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No response body"
-                    }
-                }
-            }
-        },
-        "/api/v1/clubs/reviews/": {
-            "get": {
-                "operationId": "clubsReviewsList",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "club",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "required": false,
-                        "in": "query",
-                        "description": "A page number within the paginated result set.",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page_size",
-                        "required": false,
-                        "in": "query",
-                        "description": "Number of results to return per page.",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PaginatedBookReviewList"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "post": {
-                "operationId": "clubsReviewsCreate",
-                "tags": [
-                    "clubs"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/BookReviewRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/BookReviewRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/BookReviewRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/BookReview"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/clubs/reviews/{id}/": {
-            "get": {
-                "operationId": "clubsReviewsRetrieve",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Review.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/BookReview"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "put": {
-                "operationId": "clubsReviewsUpdate",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Review.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/BookReviewRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/BookReviewRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/BookReviewRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/BookReview"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "patch": {
-                "operationId": "clubsReviewsPartialUpdate",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Review.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedBookReviewRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedBookReviewRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedBookReviewRequest"
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/BookReview"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "delete": {
-                "operationId": "clubsReviewsDestroy",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this Book Review.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "clubs"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No response body"
-                    }
-                }
-            }
-        },
-        "/api/v1/docs/schema/": {
-            "get": {
-                "operationId": "docsSchemaRetrieve",
-                "description": "OpenApi3 schema for this API. Format can be selected via content negotiation.\n\n- YAML: application/vnd.oai.openapi\n- JSON: application/vnd.oai.openapi+json",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "format",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "json",
-                                "yaml"
-                            ]
-                        }
-                    },
-                    {
-                        "in": "query",
-                        "name": "lang",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "af",
-                                "ar",
-                                "ar-dz",
-                                "ast",
-                                "az",
-                                "be",
-                                "bg",
-                                "bn",
-                                "br",
-                                "bs",
-                                "ca",
-                                "ckb",
-                                "cs",
-                                "cy",
-                                "da",
-                                "de",
-                                "dsb",
-                                "el",
-                                "en",
-                                "en-au",
-                                "en-gb",
-                                "eo",
-                                "es",
-                                "es-ar",
-                                "es-co",
-                                "es-mx",
-                                "es-ni",
-                                "es-ve",
-                                "et",
-                                "eu",
-                                "fa",
-                                "fi",
-                                "fr",
-                                "fy",
-                                "ga",
-                                "gd",
-                                "gl",
-                                "he",
-                                "hi",
-                                "hr",
-                                "hsb",
-                                "hu",
-                                "hy",
-                                "ia",
-                                "id",
-                                "ig",
-                                "io",
-                                "is",
-                                "it",
-                                "ja",
-                                "ka",
-                                "kab",
-                                "kk",
-                                "km",
-                                "kn",
-                                "ko",
-                                "ky",
-                                "lb",
-                                "lt",
-                                "lv",
-                                "mk",
-                                "ml",
-                                "mn",
-                                "mr",
-                                "ms",
-                                "my",
-                                "nb",
-                                "ne",
-                                "nl",
-                                "nn",
-                                "os",
-                                "pa",
-                                "pl",
-                                "pt",
-                                "pt-br",
-                                "ro",
-                                "ru",
-                                "sk",
-                                "sl",
-                                "sq",
-                                "sr",
-                                "sr-latn",
-                                "sv",
-                                "sw",
-                                "ta",
-                                "te",
-                                "tg",
-                                "th",
-                                "tk",
-                                "tr",
-                                "tt",
-                                "udm",
-                                "ug",
-                                "uk",
-                                "ur",
-                                "uz",
-                                "vi",
-                                "zh-hans",
-                                "zh-hant"
-                            ]
-                        }
-                    }
-                ],
-                "tags": [
-                    "docs"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/vnd.oai.openapi": {
-                                "schema": {
-                                    "type": "object",
-                                    "additionalProperties": {}
-                                }
-                            },
-                            "application/yaml": {
-                                "schema": {
-                                    "type": "object",
-                                    "additionalProperties": {}
-                                }
-                            },
-                            "application/vnd.oai.openapi+json": {
-                                "schema": {
-                                    "type": "object",
-                                    "additionalProperties": {}
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "additionalProperties": {}
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/users/me/": {
-            "get": {
-                "operationId": "usersMeRetrieve",
-                "tags": [
-                    "users"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "put": {
-                "operationId": "usersMeUpdate",
-                "tags": [
-                    "users"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "patch": {
-                "operationId": "usersMePartialUpdate",
-                "tags": [
-                    "users"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedUserRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedUserRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedUserRequest"
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "delete": {
-                "operationId": "usersMeDestroy",
-                "tags": [
-                    "users"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No response body"
-                    }
-                }
-            }
-        },
-        "/api/v1/users/register/": {
-            "post": {
-                "operationId": "usersRegisterCreate",
-                "tags": [
-                    "users"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserRegisterRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserRegisterRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserRegisterRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "tokenAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserRegister"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "BookReview": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
-                    "club": {
-                        "type": "integer"
-                    },
-                    "user": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/User"
-                            }
-                        ],
-                        "readOnly": true
-                    },
-                    "review": {
-                        "type": "string",
-                        "title": "Book Review"
-                    },
-                    "assessment": {
-                        "type": "integer",
-                        "maximum": 5,
-                        "minimum": 1
-                    },
-                    "readPages": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    },
-                    "created": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true,
-                        "title": "Дата создания"
-                    },
-                    "modified": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true,
-                        "nullable": true,
-                        "title": "Дата изменения"
-                    }
-                },
-                "required": [
-                    "assessment",
-                    "club",
-                    "created",
-                    "id",
-                    "modified",
-                    "readPages",
-                    "review",
-                    "user"
-                ]
-            },
-            "BookReviewRequest": {
-                "type": "object",
-                "properties": {
-                    "club": {
-                        "type": "integer"
-                    },
-                    "review": {
-                        "type": "string",
-                        "minLength": 1,
-                        "title": "Book Review"
-                    },
-                    "assessment": {
-                        "type": "integer",
-                        "maximum": 5,
-                        "minimum": 1
-                    },
-                    "readPages": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    }
-                },
-                "required": [
-                    "assessment",
-                    "club",
-                    "readPages",
-                    "review"
-                ]
-            },
-            "Club": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
-                    "bookTitle": {
-                        "type": "string",
-                        "maxLength": 255
-                    },
-                    "bookAuthors": {
-                        "type": "string",
-                        "maxLength": 255
-                    },
-                    "publicationYear": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    },
-                    "description": {
-                        "type": "string",
-                        "title": "Book Description"
-                    },
-                    "telegramChatLink": {
-                        "type": "string",
-                        "format": "uri",
-                        "title": "Link on Telegram chat",
-                        "maxLength": 200
-                    },
-                    "owner": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
-                    "members": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Member"
-                        },
-                        "readOnly": true
-                    },
-                    "reviews": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/BookReview"
-                        },
-                        "readOnly": true
-                    },
-                    "created": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true,
-                        "title": "Дата создания"
-                    },
-                    "modified": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true,
-                        "nullable": true,
-                        "title": "Дата изменения"
-                    }
-                },
-                "required": [
-                    "bookAuthors",
-                    "bookTitle",
-                    "created",
-                    "description",
-                    "id",
-                    "members",
-                    "modified",
-                    "owner",
-                    "publicationYear",
-                    "reviews",
-                    "telegramChatLink"
-                ]
-            },
-            "ClubRequest": {
-                "type": "object",
-                "properties": {
-                    "bookTitle": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "bookAuthors": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "publicationYear": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    },
-                    "description": {
-                        "type": "string",
-                        "minLength": 1,
-                        "title": "Book Description"
-                    },
-                    "telegramChatLink": {
-                        "type": "string",
-                        "format": "uri",
-                        "minLength": 1,
-                        "title": "Link on Telegram chat",
-                        "maxLength": 200
-                    }
-                },
-                "required": [
-                    "bookAuthors",
-                    "bookTitle",
-                    "description",
-                    "publicationYear",
-                    "telegramChatLink"
-                ]
-            },
-            "Member": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
-                    "username": {
-                        "type": "string",
-                        "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
-                        "pattern": "^[\\w.@+-]+$",
-                        "maxLength": 150
-                    },
-                    "firstName": {
-                        "type": "string",
-                        "maxLength": 150
-                    },
-                    "lastName": {
-                        "type": "string",
-                        "maxLength": 150
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "title": "Email address",
-                        "maxLength": 254
-                    }
-                },
-                "required": [
-                    "id",
-                    "username"
-                ]
-            },
-            "MemberRequest": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string",
-                        "minLength": 1,
-                        "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
-                        "pattern": "^[\\w.@+-]+$",
-                        "maxLength": 150
-                    },
-                    "firstName": {
-                        "type": "string",
-                        "maxLength": 150
-                    },
-                    "lastName": {
-                        "type": "string",
-                        "maxLength": 150
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "title": "Email address",
-                        "maxLength": 254
-                    }
-                },
-                "required": [
-                    "username"
-                ]
-            },
-            "PaginatedBookReviewList": {
-                "type": "object",
-                "required": [
-                    "count",
-                    "results"
-                ],
-                "properties": {
-                    "count": {
-                        "type": "integer",
-                        "example": 123
-                    },
-                    "next": {
-                        "type": "string",
-                        "nullable": true,
-                        "format": "uri",
-                        "example": "http://api.example.org/accounts/?page=4"
-                    },
-                    "previous": {
-                        "type": "string",
-                        "nullable": true,
-                        "format": "uri",
-                        "example": "http://api.example.org/accounts/?page=2"
-                    },
-                    "results": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/BookReview"
-                        }
-                    }
-                }
-            },
-            "PaginatedClubList": {
-                "type": "object",
-                "required": [
-                    "count",
-                    "results"
-                ],
-                "properties": {
-                    "count": {
-                        "type": "integer",
-                        "example": 123
-                    },
-                    "next": {
-                        "type": "string",
-                        "nullable": true,
-                        "format": "uri",
-                        "example": "http://api.example.org/accounts/?page=4"
-                    },
-                    "previous": {
-                        "type": "string",
-                        "nullable": true,
-                        "format": "uri",
-                        "example": "http://api.example.org/accounts/?page=2"
-                    },
-                    "results": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Club"
-                        }
-                    }
-                }
-            },
-            "PatchedBookReviewRequest": {
-                "type": "object",
-                "properties": {
-                    "club": {
-                        "type": "integer"
-                    },
-                    "review": {
-                        "type": "string",
-                        "minLength": 1,
-                        "title": "Book Review"
-                    },
-                    "assessment": {
-                        "type": "integer",
-                        "maximum": 5,
-                        "minimum": 1
-                    },
-                    "readPages": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    }
-                }
-            },
-            "PatchedClubRequest": {
-                "type": "object",
-                "properties": {
-                    "bookTitle": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "bookAuthors": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "publicationYear": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    },
-                    "description": {
-                        "type": "string",
-                        "minLength": 1,
-                        "title": "Book Description"
-                    },
-                    "telegramChatLink": {
-                        "type": "string",
-                        "format": "uri",
-                        "minLength": 1,
-                        "title": "Link on Telegram chat",
-                        "maxLength": 200
-                    }
-                }
-            },
-            "PatchedUserRequest": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string",
-                        "minLength": 1,
-                        "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
-                        "pattern": "^[\\w.@+-]+$",
-                        "maxLength": 150
-                    },
-                    "firstName": {
-                        "type": "string",
-                        "maxLength": 150
-                    },
-                    "lastName": {
-                        "type": "string",
-                        "maxLength": 150
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "title": "Email address",
-                        "maxLength": 254
-                    }
-                }
-            },
-            "RequestCode": {
-                "type": "object",
-                "properties": {
-                    "detail": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                },
-                "required": [
-                    "detail"
-                ]
-            },
-            "RequestCodeRequest": {
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "writeOnly": true,
-                        "minLength": 1
-                    }
-                },
-                "required": [
-                    "email"
-                ]
-            },
-            "RetrieveCodeRequest": {
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "minLength": 1,
-                        "description": "Email адрес, на который был отправлен код"
-                    }
-                },
-                "required": [
-                    "email"
-                ]
-            },
-            "RetrieveCodeResponse": {
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "type": "string",
-                        "description": "4-значный код подтверждения",
-                        "maxLength": 4
-                    }
-                },
-                "required": [
-                    "code"
-                ]
-            },
-            "TokenBlacklistRequest": {
-                "type": "object",
-                "properties": {
-                    "refresh": {
-                        "type": "string",
-                        "writeOnly": true,
-                        "minLength": 1
-                    }
-                },
-                "required": [
-                    "refresh"
-                ]
-            },
-            "TokenObtainPairWithProperMessage": {
-                "type": "object",
-                "properties": {
-                    "access": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "refresh": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                },
-                "required": [
-                    "access",
-                    "refresh"
-                ]
-            },
-            "TokenObtainPairWithProperMessageRequest": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string",
-                        "writeOnly": true,
-                        "minLength": 1
-                    },
-                    "password": {
-                        "type": "string",
-                        "writeOnly": true,
-                        "minLength": 1
-                    }
-                },
-                "required": [
-                    "password",
-                    "username"
-                ]
-            },
-            "TokenRefresh": {
-                "type": "object",
-                "properties": {
-                    "access": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "refresh": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "access",
-                    "refresh"
-                ]
-            },
-            "TokenRefreshRequest": {
-                "type": "object",
-                "properties": {
-                    "refresh": {
-                        "type": "string",
-                        "minLength": 1
-                    }
-                },
-                "required": [
-                    "refresh"
-                ]
-            },
-            "User": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
-                    "username": {
-                        "type": "string",
-                        "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
-                        "pattern": "^[\\w.@+-]+$",
-                        "maxLength": 150
-                    }
-                },
-                "required": [
-                    "id",
-                    "username"
-                ]
-            },
-            "UserRegister": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string",
-                        "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
-                        "pattern": "^[\\w.@+-]+$",
-                        "maxLength": 150
-                    },
-                    "password": {
-                        "type": "string",
-                        "maxLength": 128
-                    }
-                },
-                "required": [
-                    "password",
-                    "username"
-                ]
-            },
-            "UserRegisterRequest": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string",
-                        "minLength": 1,
-                        "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
-                        "pattern": "^[\\w.@+-]+$",
-                        "maxLength": 150
-                    },
-                    "password": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 128
-                    }
-                },
-                "required": [
-                    "password",
-                    "username"
-                ]
-            },
-            "UserRequest": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string",
-                        "minLength": 1,
-                        "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
-                        "pattern": "^[\\w.@+-]+$",
-                        "maxLength": 150
-                    }
-                },
-                "required": [
-                    "username"
-                ]
-            },
-            "VerifyCode": {
-                "type": "object",
-                "properties": {
-                    "access": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "refresh": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                },
-                "required": [
-                    "access",
-                    "refresh"
-                ]
-            },
-            "VerifyCodeRequest": {
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "writeOnly": true,
-                        "minLength": 1
-                    },
-                    "code": {
-                        "type": "string",
-                        "writeOnly": true,
-                        "minLength": 4,
-                        "maxLength": 4
-                    }
-                },
-                "required": [
-                    "code",
-                    "email"
-                ]
-            }
-        },
-        "securitySchemes": {
-            "cookieAuth": {
-                "type": "apiKey",
-                "in": "cookie",
-                "name": "sessionid"
-            },
-            "jwtAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
-            },
-            "tokenAuth": {
-                "type": "apiKey",
-                "in": "header",
-                "name": "Authorization",
-                "description": "Token-based authentication with required prefix \"Token\""
-            }
-        }
-    }
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Book Club API",
+		"version": "0.0.0 (v1)",
+		"description": "So great, needs no docs"
+	},
+	"paths": {
+		"/api/v1/auth/code/": {
+			"post": {
+				"operationId": "authCodeCreate",
+				"tags": ["auth"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/RequestCodeRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/RequestCodeRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/RequestCodeRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					},
+					{}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RequestCode"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			}
+		},
+		"/api/v1/auth/code/retrieve/": {
+			"post": {
+				"operationId": "authCodeRetrieveCreate",
+				"description": "Возвращает последний неиспользованный код для указанного email. Только для DEBUG.",
+				"summary": "Получить код подтверждения (тест)",
+				"tags": ["auth"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/RetrieveCodeRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/RetrieveCodeRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/RetrieveCodeRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					},
+					{}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RetrieveCodeResponse"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			}
+		},
+		"/api/v1/auth/code/verify/": {
+			"post": {
+				"operationId": "authCodeVerifyCreate",
+				"tags": ["auth"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/VerifyCodeRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/VerifyCodeRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/VerifyCodeRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					},
+					{}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/VerifyCode"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			}
+		},
+		"/api/v1/auth/logout/": {
+			"post": {
+				"operationId": "authLogoutCreate",
+				"description": "Takes a token and blacklists it. Must be used with the\n`rest_framework_simplejwt.token_blacklist` app installed.",
+				"tags": ["auth"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TokenBlacklistRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/TokenBlacklistRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/TokenBlacklistRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "No response body"
+					}
+				}
+			}
+		},
+		"/api/v1/auth/token/": {
+			"post": {
+				"operationId": "authTokenCreate",
+				"description": "Takes a set of user credentials and returns an access and refresh JSON web\ntoken pair to prove the authentication of those credentials.",
+				"tags": ["auth"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TokenObtainPairWithProperMessageRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/TokenObtainPairWithProperMessageRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/TokenObtainPairWithProperMessageRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TokenObtainPairWithProperMessage"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			}
+		},
+		"/api/v1/auth/token/refresh/": {
+			"post": {
+				"operationId": "authTokenRefreshCreate",
+				"description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.",
+				"tags": ["auth"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TokenRefreshRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/TokenRefreshRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/TokenRefreshRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TokenRefresh"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			}
+		},
+		"/api/v1/clubs/": {
+			"get": {
+				"operationId": "clubsList",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "membership",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "page",
+						"required": false,
+						"in": "query",
+						"description": "A page number within the paginated result set.",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "page_size",
+						"required": false,
+						"in": "query",
+						"description": "Number of results to return per page.",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"in": "query",
+						"name": "search",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"tags": ["clubs"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					},
+					{}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaginatedClubList"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"post": {
+				"operationId": "clubsCreate",
+				"tags": ["clubs"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ClubRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/ClubRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/ClubRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"201": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Club"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			}
+		},
+		"/api/v1/clubs/{id}/": {
+			"get": {
+				"operationId": "clubsRetrieve",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Club.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					},
+					{}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Club"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"put": {
+				"operationId": "clubsUpdate",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Club.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ClubRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/ClubRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/ClubRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Club"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"patch": {
+				"operationId": "clubsPartialUpdate",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Club.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PatchedClubRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/PatchedClubRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/PatchedClubRequest"
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Club"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"delete": {
+				"operationId": "clubsDestroy",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Club.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "No response body"
+					}
+				}
+			}
+		},
+		"/api/v1/clubs/{id}/members/me/": {
+			"post": {
+				"operationId": "clubsMembersMeCreate",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Club.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "No response body"
+					}
+				}
+			},
+			"delete": {
+				"operationId": "clubsMembersMeDestroy",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Club.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "No response body"
+					}
+				}
+			}
+		},
+		"/api/v1/clubs/reviews/": {
+			"get": {
+				"operationId": "clubsReviewsList",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "club",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "page",
+						"required": false,
+						"in": "query",
+						"description": "A page number within the paginated result set.",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "page_size",
+						"required": false,
+						"in": "query",
+						"description": "Number of results to return per page.",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"tags": ["clubs"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					},
+					{}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaginatedBookReviewList"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"post": {
+				"operationId": "clubsReviewsCreate",
+				"tags": ["clubs"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/BookReviewRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/BookReviewRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/BookReviewRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"201": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BookReview"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			}
+		},
+		"/api/v1/clubs/reviews/{id}/": {
+			"get": {
+				"operationId": "clubsReviewsRetrieve",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Review.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					},
+					{}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BookReview"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"put": {
+				"operationId": "clubsReviewsUpdate",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Review.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/BookReviewRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/BookReviewRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/BookReviewRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BookReview"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"patch": {
+				"operationId": "clubsReviewsPartialUpdate",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Review.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PatchedBookReviewRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/PatchedBookReviewRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/PatchedBookReviewRequest"
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BookReview"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"delete": {
+				"operationId": "clubsReviewsDestroy",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "A unique integer value identifying this Book Review.",
+						"required": true
+					}
+				],
+				"tags": ["clubs"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "No response body"
+					}
+				}
+			}
+		},
+		"/api/v1/docs/schema/": {
+			"get": {
+				"operationId": "docsSchemaRetrieve",
+				"description": "OpenApi3 schema for this API. Format can be selected via content negotiation.\n\n- YAML: application/vnd.oai.openapi\n- JSON: application/vnd.oai.openapi+json",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "format",
+						"schema": {
+							"type": "string",
+							"enum": ["json", "yaml"]
+						}
+					},
+					{
+						"in": "query",
+						"name": "lang",
+						"schema": {
+							"type": "string",
+							"enum": [
+								"af",
+								"ar",
+								"ar-dz",
+								"ast",
+								"az",
+								"be",
+								"bg",
+								"bn",
+								"br",
+								"bs",
+								"ca",
+								"ckb",
+								"cs",
+								"cy",
+								"da",
+								"de",
+								"dsb",
+								"el",
+								"en",
+								"en-au",
+								"en-gb",
+								"eo",
+								"es",
+								"es-ar",
+								"es-co",
+								"es-mx",
+								"es-ni",
+								"es-ve",
+								"et",
+								"eu",
+								"fa",
+								"fi",
+								"fr",
+								"fy",
+								"ga",
+								"gd",
+								"gl",
+								"he",
+								"hi",
+								"hr",
+								"hsb",
+								"hu",
+								"hy",
+								"ia",
+								"id",
+								"ig",
+								"io",
+								"is",
+								"it",
+								"ja",
+								"ka",
+								"kab",
+								"kk",
+								"km",
+								"kn",
+								"ko",
+								"ky",
+								"lb",
+								"lt",
+								"lv",
+								"mk",
+								"ml",
+								"mn",
+								"mr",
+								"ms",
+								"my",
+								"nb",
+								"ne",
+								"nl",
+								"nn",
+								"os",
+								"pa",
+								"pl",
+								"pt",
+								"pt-br",
+								"ro",
+								"ru",
+								"sk",
+								"sl",
+								"sq",
+								"sr",
+								"sr-latn",
+								"sv",
+								"sw",
+								"ta",
+								"te",
+								"tg",
+								"th",
+								"tk",
+								"tr",
+								"tt",
+								"udm",
+								"ug",
+								"uk",
+								"ur",
+								"uz",
+								"vi",
+								"zh-hans",
+								"zh-hant"
+							]
+						}
+					}
+				],
+				"tags": ["docs"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					},
+					{}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/vnd.oai.openapi": {
+								"schema": {
+									"type": "object",
+									"additionalProperties": {}
+								}
+							},
+							"application/yaml": {
+								"schema": {
+									"type": "object",
+									"additionalProperties": {}
+								}
+							},
+							"application/vnd.oai.openapi+json": {
+								"schema": {
+									"type": "object",
+									"additionalProperties": {}
+								}
+							},
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"additionalProperties": {}
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			}
+		},
+		"/api/v1/users/me/": {
+			"get": {
+				"operationId": "usersMeRetrieve",
+				"tags": ["users"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"put": {
+				"operationId": "usersMeUpdate",
+				"tags": ["users"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/UserRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/UserRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"patch": {
+				"operationId": "usersMePartialUpdate",
+				"tags": ["users"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PatchedUserRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/PatchedUserRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/PatchedUserRequest"
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			},
+			"delete": {
+				"operationId": "usersMeDestroy",
+				"tags": ["users"],
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "No response body"
+					}
+				}
+			}
+		},
+		"/api/v1/users/register/": {
+			"post": {
+				"operationId": "usersRegisterCreate",
+				"tags": ["users"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserRegisterRequest"
+							}
+						},
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/UserRegisterRequest"
+							}
+						},
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/UserRegisterRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"security": [
+					{
+						"jwtAuth": []
+					},
+					{
+						"tokenAuth": []
+					},
+					{
+						"cookieAuth": []
+					},
+					{}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserRegister"
+								}
+							}
+						},
+						"description": ""
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"BookReview": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"readOnly": true
+					},
+					"club": {
+						"type": "integer"
+					},
+					"user": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/User"
+							}
+						],
+						"readOnly": true
+					},
+					"review": {
+						"type": "string",
+						"title": "Book Review"
+					},
+					"assessment": {
+						"type": "integer",
+						"maximum": 5,
+						"minimum": 1
+					},
+					"readPages": {
+						"type": "integer",
+						"maximum": 2147483647,
+						"minimum": -2147483648
+					},
+					"created": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"title": "Дата создания"
+					},
+					"modified": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"nullable": true,
+						"title": "Дата изменения"
+					}
+				},
+				"required": [
+					"assessment",
+					"club",
+					"created",
+					"id",
+					"modified",
+					"readPages",
+					"review",
+					"user"
+				]
+			},
+			"BookReviewRequest": {
+				"type": "object",
+				"properties": {
+					"club": {
+						"type": "integer"
+					},
+					"review": {
+						"type": "string",
+						"minLength": 1,
+						"title": "Book Review"
+					},
+					"assessment": {
+						"type": "integer",
+						"maximum": 5,
+						"minimum": 1
+					},
+					"readPages": {
+						"type": "integer",
+						"maximum": 2147483647,
+						"minimum": -2147483648
+					}
+				},
+				"required": ["assessment", "club", "readPages", "review"]
+			},
+			"Club": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"readOnly": true
+					},
+					"bookTitle": {
+						"type": "string",
+						"maxLength": 255
+					},
+					"bookAuthors": {
+						"type": "string",
+						"maxLength": 255
+					},
+					"publicationYear": {
+						"type": "integer",
+						"maximum": 2147483647,
+						"minimum": -2147483648
+					},
+					"description": {
+						"type": "string",
+						"title": "Book Description"
+					},
+					"telegramChatLink": {
+						"type": "string",
+						"format": "uri",
+						"title": "Link on Telegram chat",
+						"maxLength": 200
+					},
+					"owner": {
+						"type": "integer",
+						"readOnly": true
+					},
+					"members": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Member"
+						},
+						"readOnly": true
+					},
+					"reviews": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/BookReview"
+						},
+						"readOnly": true
+					},
+					"created": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"title": "Дата создания"
+					},
+					"modified": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"nullable": true,
+						"title": "Дата изменения"
+					}
+				},
+				"required": [
+					"bookAuthors",
+					"bookTitle",
+					"created",
+					"description",
+					"id",
+					"members",
+					"modified",
+					"owner",
+					"publicationYear",
+					"reviews",
+					"telegramChatLink"
+				]
+			},
+			"ClubRequest": {
+				"type": "object",
+				"properties": {
+					"bookTitle": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 255
+					},
+					"bookAuthors": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 255
+					},
+					"publicationYear": {
+						"type": "integer",
+						"maximum": 2147483647,
+						"minimum": -2147483648
+					},
+					"description": {
+						"type": "string",
+						"minLength": 1,
+						"title": "Book Description"
+					},
+					"telegramChatLink": {
+						"type": "string",
+						"format": "uri",
+						"minLength": 1,
+						"title": "Link on Telegram chat",
+						"maxLength": 200
+					}
+				},
+				"required": [
+					"bookAuthors",
+					"bookTitle",
+					"description",
+					"publicationYear",
+					"telegramChatLink"
+				]
+			},
+			"Member": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"readOnly": true
+					},
+					"username": {
+						"type": "string",
+						"description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+						"pattern": "^[\\w.@+-]+$",
+						"maxLength": 150
+					},
+					"firstName": {
+						"type": "string",
+						"maxLength": 150
+					},
+					"lastName": {
+						"type": "string",
+						"maxLength": 150
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"title": "Email address",
+						"maxLength": 254
+					}
+				},
+				"required": ["id", "username"]
+			},
+			"MemberRequest": {
+				"type": "object",
+				"properties": {
+					"username": {
+						"type": "string",
+						"minLength": 1,
+						"description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+						"pattern": "^[\\w.@+-]+$",
+						"maxLength": 150
+					},
+					"firstName": {
+						"type": "string",
+						"maxLength": 150
+					},
+					"lastName": {
+						"type": "string",
+						"maxLength": 150
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"title": "Email address",
+						"maxLength": 254
+					}
+				},
+				"required": ["username"]
+			},
+			"PaginatedBookReviewList": {
+				"type": "object",
+				"required": ["count", "results"],
+				"properties": {
+					"count": {
+						"type": "integer",
+						"example": 123
+					},
+					"next": {
+						"type": "string",
+						"nullable": true,
+						"format": "uri",
+						"example": "http://api.example.org/accounts/?page=4"
+					},
+					"previous": {
+						"type": "string",
+						"nullable": true,
+						"format": "uri",
+						"example": "http://api.example.org/accounts/?page=2"
+					},
+					"results": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/BookReview"
+						}
+					}
+				}
+			},
+			"PaginatedClubList": {
+				"type": "object",
+				"required": ["count", "results"],
+				"properties": {
+					"count": {
+						"type": "integer",
+						"example": 123
+					},
+					"next": {
+						"type": "string",
+						"nullable": true,
+						"format": "uri",
+						"example": "http://api.example.org/accounts/?page=4"
+					},
+					"previous": {
+						"type": "string",
+						"nullable": true,
+						"format": "uri",
+						"example": "http://api.example.org/accounts/?page=2"
+					},
+					"results": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Club"
+						}
+					}
+				}
+			},
+			"PatchedBookReviewRequest": {
+				"type": "object",
+				"properties": {
+					"club": {
+						"type": "integer"
+					},
+					"review": {
+						"type": "string",
+						"minLength": 1,
+						"title": "Book Review"
+					},
+					"assessment": {
+						"type": "integer",
+						"maximum": 5,
+						"minimum": 1
+					},
+					"readPages": {
+						"type": "integer",
+						"maximum": 2147483647,
+						"minimum": -2147483648
+					}
+				}
+			},
+			"PatchedClubRequest": {
+				"type": "object",
+				"properties": {
+					"bookTitle": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 255
+					},
+					"bookAuthors": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 255
+					},
+					"publicationYear": {
+						"type": "integer",
+						"maximum": 2147483647,
+						"minimum": -2147483648
+					},
+					"description": {
+						"type": "string",
+						"minLength": 1,
+						"title": "Book Description"
+					},
+					"telegramChatLink": {
+						"type": "string",
+						"format": "uri",
+						"minLength": 1,
+						"title": "Link on Telegram chat",
+						"maxLength": 200
+					}
+				}
+			},
+			"PatchedUserRequest": {
+				"type": "object",
+				"properties": {
+					"username": {
+						"type": "string",
+						"minLength": 1,
+						"description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+						"pattern": "^[\\w.@+-]+$",
+						"maxLength": 150
+					},
+					"firstName": {
+						"type": "string",
+						"maxLength": 150
+					},
+					"lastName": {
+						"type": "string",
+						"maxLength": 150
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"title": "Email address",
+						"maxLength": 254
+					}
+				}
+			},
+			"RequestCode": {
+				"type": "object",
+				"properties": {
+					"detail": {
+						"type": "string",
+						"readOnly": true
+					}
+				},
+				"required": ["detail"]
+			},
+			"RequestCodeRequest": {
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"writeOnly": true,
+						"minLength": 1
+					}
+				},
+				"required": ["email"]
+			},
+			"RetrieveCodeRequest": {
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"minLength": 1,
+						"description": "Email адрес, на который был отправлен код"
+					}
+				},
+				"required": ["email"]
+			},
+			"RetrieveCodeResponse": {
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "string",
+						"description": "4-значный код подтверждения",
+						"maxLength": 4
+					}
+				},
+				"required": ["code"]
+			},
+			"TokenBlacklistRequest": {
+				"type": "object",
+				"properties": {
+					"refresh": {
+						"type": "string",
+						"writeOnly": true,
+						"minLength": 1
+					}
+				},
+				"required": ["refresh"]
+			},
+			"TokenObtainPairWithProperMessage": {
+				"type": "object",
+				"properties": {
+					"access": {
+						"type": "string",
+						"readOnly": true
+					},
+					"refresh": {
+						"type": "string",
+						"readOnly": true
+					}
+				},
+				"required": ["access", "refresh"]
+			},
+			"TokenObtainPairWithProperMessageRequest": {
+				"type": "object",
+				"properties": {
+					"username": {
+						"type": "string",
+						"writeOnly": true,
+						"minLength": 1
+					},
+					"password": {
+						"type": "string",
+						"writeOnly": true,
+						"minLength": 1
+					}
+				},
+				"required": ["password", "username"]
+			},
+			"TokenRefresh": {
+				"type": "object",
+				"properties": {
+					"access": {
+						"type": "string",
+						"readOnly": true
+					},
+					"refresh": {
+						"type": "string"
+					}
+				},
+				"required": ["access", "refresh"]
+			},
+			"TokenRefreshRequest": {
+				"type": "object",
+				"properties": {
+					"refresh": {
+						"type": "string",
+						"minLength": 1
+					}
+				},
+				"required": ["refresh"]
+			},
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"readOnly": true
+					},
+					"username": {
+						"type": "string",
+						"description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+						"pattern": "^[\\w.@+-]+$",
+						"maxLength": 150
+					}
+				},
+				"required": ["id", "username"]
+			},
+			"UserRegister": {
+				"type": "object",
+				"properties": {
+					"username": {
+						"type": "string",
+						"description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+						"pattern": "^[\\w.@+-]+$",
+						"maxLength": 150
+					},
+					"password": {
+						"type": "string",
+						"maxLength": 128
+					}
+				},
+				"required": ["password", "username"]
+			},
+			"UserRegisterRequest": {
+				"type": "object",
+				"properties": {
+					"username": {
+						"type": "string",
+						"minLength": 1,
+						"description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+						"pattern": "^[\\w.@+-]+$",
+						"maxLength": 150
+					},
+					"password": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 128
+					}
+				},
+				"required": ["password", "username"]
+			},
+			"UserRequest": {
+				"type": "object",
+				"properties": {
+					"username": {
+						"type": "string",
+						"minLength": 1,
+						"description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+						"pattern": "^[\\w.@+-]+$",
+						"maxLength": 150
+					}
+				},
+				"required": ["username"]
+			},
+			"VerifyCode": {
+				"type": "object",
+				"properties": {
+					"access": {
+						"type": "string",
+						"readOnly": true
+					},
+					"refresh": {
+						"type": "string",
+						"readOnly": true
+					}
+				},
+				"required": ["access", "refresh"]
+			},
+			"VerifyCodeRequest": {
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"writeOnly": true,
+						"minLength": 1
+					},
+					"code": {
+						"type": "string",
+						"writeOnly": true,
+						"minLength": 4,
+						"maxLength": 4
+					}
+				},
+				"required": ["code", "email"]
+			}
+		},
+		"securitySchemes": {
+			"cookieAuth": {
+				"type": "apiKey",
+				"in": "cookie",
+				"name": "sessionid"
+			},
+			"jwtAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			},
+			"tokenAuth": {
+				"type": "apiKey",
+				"in": "header",
+				"name": "Authorization",
+				"description": "Token-based authentication with required prefix \"Token\""
+			}
+		}
+	}
 }

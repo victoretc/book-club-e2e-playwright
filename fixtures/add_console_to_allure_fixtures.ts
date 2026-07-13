@@ -9,7 +9,7 @@ import nunjucks from "nunjucks";
 const CONSOLE_ERROR_EXCEPTIONS = [
 	"Error fetching clubs: TypeError: Failed to fetch",
 	"Failed to load resource: the server responded with a status of 500",
-	"Error fetching clubs: Response"
+	"Error fetching clubs: Response",
 ].map((pattern) => new RegExp(pattern, "i"));
 
 function getAdditionalExceptions(testInfo: TestInfo): RegExp[] {

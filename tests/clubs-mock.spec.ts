@@ -12,7 +12,6 @@ test("Клубы", async ({ mock, dashboardPage }) => {
 	);
 });
 
-
 test("Клубы - бэк не отвечает", async ({ mock, dashboardPage }) => {
 	await mock.route(MockedclubsList(null, 500));
 	await dashboardPage.open();
