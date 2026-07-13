@@ -6,7 +6,7 @@ test("Авторизация", async ({
 	registeredUser,
 	authCode,
 	profilePage,
-	page
+	page,
 }) => {
 	await signInPage.open();
 	await signInPage.fillEmail(registeredUser.email);
@@ -50,12 +50,7 @@ test("Авторизация — кнопка «Назад» возвращае�
 	await signInPage.expectEmailPreserved(email);
 });
 
-test("Регистрация", async ({
-	signInPage,
-	authCode,
-	profilePage,
-	page
-}) => {
+test("Регистрация", async ({ signInPage, authCode, profilePage, page }) => {
 	const email = faker.internet.email();
 	await signInPage.open();
 	await signInPage.fillEmail(email);

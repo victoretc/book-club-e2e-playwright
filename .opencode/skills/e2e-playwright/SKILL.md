@@ -2,7 +2,7 @@
 name: e2e-playwright
 description: |
   Write UI E2E tests for any Playwright JS/TS project using @playwright/test, following the
-  established Page Object and component patterns. Use this skill whenever the user asks to write
+  established Page Object patterns. Use this skill whenever the user asks to write
   e2e tests, create ui autotests, cover a page with playwright tests, write playwright specs,
   or wants to test any web page functionality through automated browser tests. Also trigger when
   the user mentions "автотесты", "ui тесты", "e2e", "playwright тесты", "покрыть тестами страницу",
@@ -12,27 +12,28 @@ description: |
 # E2E Playwright Test Writer
 
 This skill writes UI E2E tests for Playwright JS/TS projects using `@playwright/test`.
-It follows the established patterns: Page Objects, Components, and custom Fixtures.
+It follows the established patterns: Page Objects and custom Fixtures.
 
 ## Project structure reference
 
 ```
 tests/
 ├── pages/              — Page Object classes
-│   ├── LoginPage.ts
+│   ├── SignInPage.ts
 │   ├── DashboardPage.ts
-│   └── index.ts
-├── components/         — Reusable UI components (forms, modals, etc.)
-│   ├── LoginForm.ts
-│   └── index.ts
+│   └── ...
 └── *.spec.ts           — Test files
 
 fixtures/
-├── base.ts             — Merged test fixtures (credentials, page objects, etc.)
-├── add_console_to_allure_fixtures.ts
-└── add_network_to_allure_fixtures.ts
+├── api.ts              — API client fixtures (generated clients for setup/teardown)
+├── auth.ts             — User registration, authorization, authCode fixtures
+├── pages.ts            — Page Object fixtures (extends auth.ts)
+├── base.ts             — Merged test fixtures (console + network + pages)
+├── add_console_to_allure_fixtures.ts   — Auto-captures console messages for Allure
+├── add_network_to_allure_fixtures.ts   — Auto-captures network requests for Allure
+└── templates/          — Nunjucks HTML templates for Allure reports
 
-.env.{ENV}              — Environment variables (BASE_URL, TEST_EMAIL, etc.)
+.env.{ENV}              — Environment variables (BASE_URL, API_BASE_URL)
 playwright.config.ts    — Playwright configuration
 ```
 
@@ -73,42 +74,7 @@ If the user wants to add, remove, or modify test cases — adjust the checklist 
 
 After approval, create three things:
 
-#### 4a. Component in `tests/components/`
-
-Create `tests/components/<FeatureName>.ts` if the UI element is reusable across pages.
-Components encapsulate locators and element-specific actions. They do NOT handle navigation.
-Every user-facing action must be wrapped in `test.step()` for Allure reporting.
-
-```ts
-import type { Page } from "@playwright/test";
-import { test } from "@playwright/test";
-
-export class LoginForm {
-	readonly emailInput = this.page.getByTestId("login-email");
-	readonly passwordInput = this.page.getByTestId("login-password");
-	readonly submitButton = this.page.getByTestId("login-submit");
-
-	constructor(public readonly page: Page) {}
-
-	async authorize_as(email: string, password: string) {
-		await test.step("Ввести email", async () => {
-			await this.emailInput.fill(email);
-		});
-		await test.step("Ввести пароль", async () => {
-			await this.passwordInput.fill(password);
-		});
-		await test.step("Нажать Войти", async () => {
-			await this.submitButton.click();
-		});
-	}
-}
-```
-
-When to create a Component vs just locators in Page Object:
-- Component — if the same UI block (form, modal, table) appears on multiple pages
-- Page Object locators — if elements are specific to one page only
-
-#### 4b. Page Object in `tests/pages/`
+#### 4a. Page Object in `tests/pages/`
 
 Create `tests/pages/<PageName>.ts`:
 
@@ -116,40 +82,32 @@ Create `tests/pages/<PageName>.ts`:
 import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
-export class DashboardPage {
-	readonly root = this.page.getByTestId("dashboard-v2-page");
-	readonly userMenu = this.page.getByTestId("header-user-menu");
+export class SignInPage {
+	readonly emailInput = this.page.getByTestId("email-input");
+	readonly submitButton = this.page.getByTestId("submit-button");
 
 	constructor(public readonly page: Page) {}
 
-	async expectVisible() {
-		await test.step("Проверить отображение дашборда", async () => {
-			await expect(this.root).toBeVisible();
-		});
-		await test.step("Проверить отображение меню пользователя", async () => {
-			await expect(this.userMenu).toBeVisible();
-		});
-	}
-}
-```
-
-If the page uses a Component:
-
-```ts
-import type { Page } from "@playwright/test";
-import { test } from "@playwright/test";
-import { LoginForm } from "../components/LoginForm";
-
-export class LoginPage {
-	readonly loginForm: LoginForm;
-
-	constructor(public readonly page: Page) {
-		this.loginForm = new LoginForm(page);
+	async open() {
+		await this.page.goto("/signin");
 	}
 
-	async as(email: string, password: string) {
-		await test.step("Авторизоваться", async () => {
-			await this.loginForm.authorize_as(email, password);
+	async expectEmailStep() {
+		await test.step("Проверить отображение шага ввода email", async () => {
+			await expect(this.emailInput).toBeVisible();
+			await expect(this.submitButton).toBeVisible();
+		});
+	}
+
+	async fillEmail(email: string) {
+		await test.step(`Ввести "${email}" в поле "Электропочта"`, async () => {
+			await this.emailInput.fill(email);
+		});
+	}
+
+	async requestCode() {
+		await test.step('Нажать "Получить код"', async () => {
+			await this.submitButton.click();
 		});
 	}
 }
@@ -159,77 +117,187 @@ Key rules:
 - No BasePage inheritance — use composition
 - `public readonly page: Page` in constructor enables `this.page` in field initializers
 - Requires `"useDefineForClassFields": false` in tsconfig.json
-- Locators use `getByTestId()` — kebab-case: `login-email`, `submit-button`
-- No navigation in Page Objects — that belongs in fixtures
+- Locators use `getByTestId()`, `getByRole()`, `getByPlaceholder()`, `getByText()` — choose the most semantic one
+- Each Page Object has an `open()` method with `page.goto()` for navigation to its page
 
 Locator naming conventions:
 - Kebab-case for testids: `login-email`, `header-user-menu`, `dashboard-v2-page`
 - Element type at the end: `*-button`, `*-input`, `*-link`, `*-modal`
+- Use `getByRole()` for buttons and headings: `getByRole("button", { name: "Войти" })`
+- Use `getByPlaceholder()` for inputs with visible placeholder text
+- Use `getByText()` for error messages and inline text
+- Use `getByTestId()` as primary for testid-based locators
 
 Element naming in code (camelCase):
 - Component name + role: `emailInput`, `submitButton`, `passwordInput`
 - Not: `inputEmail`, `submitButton` is wrong — it's `submit` + `Button`
 
-#### 4c. Fixture in `fixtures/base.ts`
+#### 4b. Fixtures in `fixtures/`
 
-Register page objects and test data as fixtures:
+Fixtures form a chain: `api.ts` → `auth.ts` → `pages.ts` → `base.ts`. Each layer extends the previous one.
+
+**`fixtures/api.ts`** — API clients for setup/teardown:
 
 ```ts
-import { mergeTests } from "@playwright/test";
 import { test as base } from "@playwright/test";
-import { LoginPage } from "../tests/pages/LoginPage";
-import { DashboardPage } from "../tests/pages/DashboardPage";
+import { Auth } from "../src/api/Auth";
+import { Users } from "../src/api/Users";
 
-type Credentials = {
-	email: string;
-	password: string;
+type Api = {
+	auth: Auth;
+	users: Users;
 };
 
-const pageTest = base.extend<{
-	loginPage: LoginPage;
-	dashboardPage: DashboardPage;
-	credentials: Credentials;
-}>({
-	credentials: async ({}, use) => {
-		const email = process.env.TEST_EMAIL;
-		const password = process.env.TEST_PASSWORD;
-		if (!email || !password) {
-			throw new Error("TEST_EMAIL and TEST_PASSWORD env vars are required");
-		}
-		await use({ email, password });
+export const test = base.extend<{ api: Api }>({
+	api: async ({ playwright }, use) => {
+		const apiRequest = await playwright.request.newContext({
+			baseURL: process.env.API_BASE_URL,
+		});
+		await use({
+			auth: new Auth(apiRequest),
+			users: new Users(apiRequest),
+		});
+		await apiRequest.dispose();
 	},
-	loginPage: async ({ page }, use) => {
-		await page.goto("/login");
-		await use(new LoginPage(page));
+});
+```
+
+**`fixtures/auth.ts`** — User registration, authorization, auth code retrieval:
+
+```ts
+import { faker } from "@faker-js/faker";
+import { test as apiTest } from "./api";
+
+type RegisteredUser = {
+	id: number;
+	email: string;
+	username: string;
+	access: string;
+	refresh: string;
+};
+
+type AuthCode = {
+	retrieve: (email: string) => Promise<string>;
+};
+
+export const test = apiTest.extend<{
+	registeredUser: RegisteredUser;
+	authorizedUser: RegisteredUser;
+	authCode: AuthCode;
+}>({
+	registeredUser: async ({ api }, use) => {
+		const email = faker.internet.email();
+		const { code } = await api.auth.authCodeCreate({ email });
+		const { code: retrievedCode } = await api.auth.authCodeRetrieveCreate({ email });
+		const { access, refresh } = await api.auth.authCodeVerifyCreate({
+			email,
+			code: retrievedCode,
+		});
+		const { id } = await api.users.usersMeRetrieve({
+			headers: { Authorization: `Bearer ${access}` },
+		});
+		const user = { id, email, username: email, access, refresh };
+		await use(user);
+		await api.users.usersMeDestroy({
+			headers: { Authorization: `Bearer ${access}` },
+		});
+	},
+	authorizedUser: async ({ registeredUser, page }, use) => {
+		await page.addInitScript(
+			({ id, email, access, refresh }) => {
+				localStorage.setItem(
+					"book_club_auth",
+					JSON.stringify({
+						user: { id, username: email, firstName: "", lastName: "", email },
+						accessToken: access,
+						refreshToken: refresh,
+					}),
+				);
+			},
+			{
+				id: registeredUser.id,
+				email: registeredUser.email,
+				access: registeredUser.access,
+				refresh: registeredUser.refresh,
+			},
+		);
+		await use(registeredUser);
+	},
+	authCode: async ({ api }, use) => {
+		await use({
+			retrieve: async (email: string) => {
+				const { code } = await api.auth.authCodeRetrieveCreate({ email });
+				return code;
+			},
+		});
+	},
+});
+```
+
+**`fixtures/pages.ts`** — Page Objects:
+
+```ts
+import { test as authTest } from "./auth";
+import { SignInPage } from "../tests/pages/SignInPage";
+import { DashboardPage } from "../tests/pages/DashboardPage";
+
+export const test = authTest.extend<{
+	signInPage: SignInPage;
+	dashboardPage: DashboardPage;
+}>({
+	signInPage: async ({ page }, use) => {
+		await use(new SignInPage(page));
 	},
 	dashboardPage: async ({ page }, use) => {
 		await use(new DashboardPage(page));
 	},
 });
+```
 
-export const test = mergeTests(pageTest);
+**`fixtures/base.ts`** — Merge everything + auto-fixtures for Allure:
+
+```ts
+import { mergeTests } from "@playwright/test";
+import { test as consoleTest } from "./add_console_to_allure_fixtures";
+import { test as networkTest } from "./add_network_to_allure_fixtures";
+import { test as pagesTest } from "./pages";
+
+export const test = mergeTests(consoleTest, networkTest, pagesTest);
 export { expect } from "@playwright/test";
 ```
 
 Key rules:
-- Navigation (`page.goto`) belongs in fixtures, not in Page Objects
-- Env vars validated with explicit error — no `?? ""` fallbacks, no `!` assertions
 - Fixtures compose via `mergeTests()` from `@playwright/test`
+- Each fixture file extends the previous layer — never skip a layer
+- Env vars validated with explicit error — no `?? ""` fallbacks, no `!` assertions
+- API clients created via `playwright.request.newContext()`, disposed after use
+- Auth setup/teardown happens via API (register in setup, delete in teardown)
+- `authorizedUser` injects auth into `localStorage` via `addInitScript()` — no UI login needed
 
-#### 4d. Write test in `tests/`
+#### 4c. Write test in `tests/`
 
 Create `tests/<feature>.spec.ts`:
 
 ```ts
+import { faker } from "@faker-js/faker";
 import { test } from "../fixtures/base";
 
-test("Авторизация — успешный вход по email и паролю", async ({
-	loginPage,
-	dashboardPage,
-	credentials,
-}) => {
-	await loginPage.as(credentials.email, credentials.password);
-	await dashboardPage.expectVisible();
+test("Создать клуб", async ({ authorizedUser, createClubPage, dashboardPage }) => {
+	const bookTitle = faker.book.title();
+
+	await createClubPage.open();
+	await createClubPage.expectVisible();
+
+	await createClubPage.fillForm({
+		bookTitle,
+		bookAuthors: faker.person.fullName(),
+		publicationYear: faker.number.int({ min: 1900, max: 2025 }),
+		description: faker.lorem.sentence(),
+		telegramChatLink: `https://t.me/${faker.internet.username()}`,
+	});
+	await createClubPage.submit();
+	await dashboardPage.searchClub(bookTitle);
+	await dashboardPage.expectClubVisible(bookTitle);
 });
 ```
 
@@ -242,6 +310,7 @@ Format: `Feature — expected behavior`. Examples:
 Test conventions:
 - Import `test` from `../fixtures/base`, not from `@playwright/test`
 - Tests receive page objects and data via fixture destructuring
+- Use `@faker-js/faker` for test data generation (emails, names, titles, numbers, URLs)
 - No `if/else` in tests
 - No `time.sleep()` or `page.waitForTimeout()`
 - No `try/except` without good reason
@@ -250,36 +319,37 @@ Test conventions:
 
 ### Allure reporting
 
-Steps are added inside Components and Page Objects, not in tests.
+Steps are added inside Page Objects, not in tests.
 Each `test.step()` describes one user-visible action in Russian.
 
 Rules:
-- Steps go in Components and Page Objects — tests stay clean
+- Steps go in Page Objects — tests stay clean
 - Step name = concise business action, no technical details
 - One step = one action (fill, click, check)
 - Step names in Russian
 - Do NOT wrap method calls in `test.step()` if the called method already has steps inside
 
 ```ts
-// PRAVILNO — step inside Component
-async authorize_as(email: string, password: string) {
-	await test.step("Ввести email", async () => {
+// PRAVILNO — step inside Page Object
+async fillEmail(email: string) {
+	await test.step(`Ввести "${email}" в поле "Электропочта"`, async () => {
 		await this.emailInput.fill(email);
 	});
 }
 
 // NEVER — step wrapping a method that already has steps
-await test.step("Авторизоваться", async () => {
-	await this.loginForm.authorize_as(email, password); // authorize_as уже имеет шаги внутри
+await test.step("Заполнить email", async () => {
+	await this.signInPage.fillEmail(email); // fillEmail уже имеет шаг внутри
 });
 ```
 
-Exception: Page Object метод может иметь свой шаг-обёртку, если вызывает Component:
+Exception: Page Object method can have its own step wrapper if it composes other Page Objects:
 ```ts
 // DOPUSTIMO — Page Object добавляет свой контекст
-async as(email: string, password: string) {
-	await test.step("Авторизоваться", async () => {
-		await this.loginForm.authorize_as(email, password);
+async searchClub(title: string) {
+	await test.step("Найти клуб в поиске", async () => {
+		await this.searchInput.fill(title);
+		await this.searchButton.click();
 	});
 }
 ```
@@ -295,10 +365,53 @@ Step naming dictionary:
 | Выбор опции | Выбрать "{значение}" в "{название}" | Выбрать "Москва" в "Город" |
 | Переход | Перейти в "{название}" | Перейти в "Каталог" |
 
+### Console and Network Allure fixtures
+
+Two auto-fixtures capture browser data and attach HTML reports to Allure:
+
+- `consoleCapture` — captures all console messages, checks for unexpected errors
+- `networkCapture` — captures all network responses, attaches request/response details
+
+Both are auto-enabled (no need to request them in tests).
+
+**Suppressing expected console errors:**
+
+Some tests intentionally trigger console errors (e.g., failed API calls). Use annotations to whitelist specific error patterns:
+
+```ts
+test("Авторизация — неверный код", async ({ signInPage }) => {
+	test.info().annotations.push({
+		type: "consoleErrorExceptions",
+		description: JSON.stringify([
+			"Failed to load resource: the server responded with a status of 400",
+		]),
+	});
+	// ... test code
+});
+```
+
+The annotation value is a JSON array of regex patterns. Errors matching any pattern are ignored.
+
+### Test data with @faker-js/faker
+
+Use `@faker-js/faker` for generating realistic test data. Import it at the top of the spec file:
+
+```ts
+import { faker } from "@faker-js/faker";
+```
+
+Common methods:
+- `faker.internet.email()` — random email
+- `faker.person.fullName()` — random name
+- `faker.book.title()` — random book title
+- `faker.number.int({ min, max })` — random integer in range
+- `faker.lorem.sentence()` — random sentence
+- `faker.internet.username()` — random username
+
 ### Phase 5: Validate
 
 After writing the code:
-1. Run `npm run typecheck` (or `tsc --noEemit`)
+1. Run `npm run typecheck` (or `tsc --noEmit`)
 2. Run `npm run lint` and `npm run fmt`
 3. Remind the user to run `npm run e2e` to verify tests pass
 
@@ -306,13 +419,13 @@ After writing the code:
 
 - **Tabs** for indentation
 - **Double quotes** for strings
-- Biome or ESLint with recommended rules
+- Biome with recommended rules
 - No comments in code
 
 ## Important notes
 
-- Read existing page objects and components to match the exact code style before writing new ones
+- Read existing page objects to match the exact code style before writing new ones
 - Keep Page Objects focused on one page — don't create mega-classes
-- Components are for reusable UI blocks only, not for every element
-- If a component is only used on one page, put locators directly in the Page Object
+- If a UI block is only used on one page, put locators directly in the Page Object
 - Environment variables go in `.env.{ENV}` files, loaded via dotenv in playwright.config.ts
+- Test users are created and cleaned up via API — never rely on pre-existing test data

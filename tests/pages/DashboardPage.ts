@@ -4,6 +4,7 @@ import { expect, test } from "@playwright/test";
 export class DashboardPage {
 	readonly searchInput = this.page.getByPlaceholder("Найти книжный клуб");
 	readonly searchButton = this.page.getByRole("button", { name: "Найти" });
+	readonly clubCards = this.page.getByRole("heading", { level: 3 });
 
 	constructor(public readonly page: Page) {}
 
@@ -24,6 +25,12 @@ export class DashboardPage {
 	async expectClubVisible(title: string) {
 		await test.step("Проверить отображение клуба", async () => {
 			await expect(this.clubCard(title)).toBeVisible();
+		});
+	}
+
+	async expectClubsCount(count: number) {
+		await test.step(`Проверить количество клубов: ${count}`, async () => {
+			await expect(this.clubCards).toHaveCount(count);
 		});
 	}
 }
