@@ -259,10 +259,11 @@ export const test = authTest.extend<{
 ```ts
 import { mergeTests } from "@playwright/test";
 import { test as consoleTest } from "./add_console_to_allure_fixtures";
+import { test as mockTest } from "./mock";
 import { test as networkTest } from "./add_network_to_allure_fixtures";
 import { test as pagesTest } from "./pages";
 
-export const test = mergeTests(consoleTest, networkTest, pagesTest);
+export const test = mergeTests(consoleTest, networkTest, pagesTest, mockTest);
 export { expect } from "@playwright/test";
 ```
 
@@ -414,6 +415,363 @@ After writing the code:
 1. Run `npm run typecheck` (or `tsc --noEmit`)
 2. Run `npm run lint` and `npm run fmt`
 3. Remind the user to run `npm run e2e` to verify tests pass
+
+## Используемые подходы
+
+### Мокинг API-запросов
+
+Проект использует `page.route()` для перехвата HTTP-запросов и подмены ответов. Это позволяет тестировать UI без реального бэкенда.
+
+#### Инфраструктура мокинга
+
+Класс `Mock` в `utils/mock.ts`:
+
+```ts
+import type { Page } from "@playwright/test";
+
+export interface RouteConfig {
+	url: string;
+	method: string;
+	body: object | null;
+	status?: number;
+}
+
+export class Mock {
+	constructor(private page: Page) {}
+
+	async route(config: RouteConfig): Promise<void> {
+		const { url, method, body, status } = config;
+		const pattern = url.startsWith("http") ? url : `*/**${url}**`;
+		await this.page.route(pattern, async (route) => {
+			if (route.request().method() === method) {
+				const response: Record<string, unknown> = { status: status ?? 200 };
+				if (body !== null && body !== undefined) {
+					response.json = body;
+				}
+				await route.fulfill(response);
+			} else {
+				await route.fallback();
+			}
+		});
+	}
+}
+```
+
+Фикстура `mock` в `fixtures/mock.ts`:
+
+```ts
+import { test as base } from "@playwright/test";
+import { Mock } from "../utils/mock";
+
+export const test = base.extend<{ mock: Mock }>({
+	mock: async ({ page }, use) => {
+		await use(new Mock(page));
+	},
+});
+```
+
+#### Сгенерированные `Mocked*` функции
+
+Каждый API-клиент в `generated/api/` экспортирует `Mocked*` функции по одному на каждый эндпоинт. Функция создаёт объект `RouteConfig`, который передаётся в `mock.route()`.
+
+Пример — как выглядят сгенерированные функции в `generated/api/Clubs.ts`:
+
+```ts
+export const MockedclubsList = (
+	body: PaginatedClubList | null = fixtures.PaginatedClubList,
+	status: number = 200,
+): RouteConfig => ({
+	url: `/api/v1/clubs/`,
+	method: "GET",
+	body,
+	status,
+});
+
+export const MockedclubsCreate = (
+	body: Club | null = fixtures.Club,
+	status: number = 201,
+): RouteConfig => ({
+	url: `/api/v1/clubs/`,
+	method: "POST",
+	body,
+	status,
+});
+
+export const MockedclubsRetrieve = (
+	id: number,
+	body: Club | null = fixtures.Club,
+	status: number = 200,
+): RouteConfig => ({
+	url: `/api/v1/clubs/${id}/`,
+	method: "GET",
+	body,
+	status,
+});
+
+export const MockedclubsDestroy = (
+	id: number,
+	status: number = 204,
+): RouteConfig => ({
+	url: `/api/v1/clubs/${id}/`,
+	method: "DELETE",
+	status,
+});
+
+export const MockedclubsMembersMeCreate = (
+	id: number,
+	status: number = 204,
+): RouteConfig => ({
+	url: `/api/v1/clubs/${id}/members/me/`,
+	method: "POST",
+	status,
+});
+```
+
+И в `generated/api/Auth.ts`:
+
+```ts
+export const MockedauthCodeCreate = (
+	body: RequestCode | null = fixtures.RequestCode,
+	status: number = 200,
+): RouteConfig => ({
+	url: `/api/v1/auth/code/`,
+	method: "POST",
+	body,
+	status,
+});
+
+export const MockedauthCodeRetrieveCreate = (
+	body: RetrieveCodeResponse | null = fixtures.RetrieveCodeResponse,
+	status: number = 200,
+): RouteConfig => ({
+	url: `/api/v1/auth/code/retrieve/`,
+	method: "POST",
+	body,
+	status,
+});
+
+export const MockedauthLogoutCreate = (
+	status: number = 200,
+): RouteConfig => ({
+	url: `/api/v1/auth/logout/`,
+	method: "POST",
+	status,
+});
+```
+
+Паттерн одинаков для всех функций: `Mocked` + тег + название операции. Есть три варианта сигнатуры:
+
+- **Список/создание** — `(body?, status?)` — без обязательных параметров
+- **Детальный** — `(id, body?, status?)` — первый аргумент `id`
+- **Без тела** — `(status?)` — только статус (DELETE, вступление в клуб, логаут)
+
+#### Фикстуры — значения по умолчанию
+
+Каждый `Mocked*` без аргументов использует авто-сгенерированные данные из `generated/api/fixtures.ts`. Пример — fixtures для `Club`:
+
+```ts
+export const fixtures = {
+	Club: {
+		id: 202,
+		bookTitle: "0PkGqM1Dp2UtmFQLaDZdKbqdlWGbk0EYtBcdIKpOmsT1FmrseOQQ5f6...",
+		bookAuthors: "i1waTN24mLElcRRsrubn9J9kkIsyAzQyu3uELHKoustPnkRthtcJmDx...",
+		publicationYear: -1780253595,
+		description: "T72CRiq",
+		telegramChatLink: "https://example.com/users",
+		owner: 138,
+		members: [{ id: 433, username: "0nSI", firstName: "DCAutjFq...", lastName: "79VtNP...", email: "charlie649@example.com" }],
+		reviews: [{ id: 470, club: 598, user: { id: -248, username: "0H" }, review: "f", assessment: 4, readPages: -29365277, ... }],
+		created: "2020-08-18T04:55:31Z",
+		modified: "2023-01-30T13:17:02Z",
+	},
+	PaginatedClubList: {
+		count: 123,
+		next: "http://api.example.org/accounts/?page=4",
+		previous: "http://api.example.org/accounts/?page=2",
+		results: [{ /* Club */ }],
+	},
+	// ... другие типы
+} as const;
+```
+
+Фикстуры генерируются через `json-schema-faker` из OpenAPI-схемы при запуске `npm run generate:api`. Значения — случайные, но стабильные (seed=42).
+
+#### Примеры использования
+
+**Мок с дефолтными данными** — вернёт сгенерированный объект:
+
+```ts
+import { MockedclubsList } from "../generated/api/Clubs";
+import { test } from "../fixtures/base";
+
+test("Клубы", async ({ mock, dashboardPage }) => {
+	await mock.route(MockedclubsList());
+
+	await dashboardPage.open();
+	await dashboardPage.expectClubsCount(1);
+});
+```
+
+**Мок с кастомным телом** — подставить свои данные:
+
+```ts
+import { MockedclubsList } from "../generated/api/Clubs";
+import { test } from "../fixtures/base";
+
+test("Клубы — пустой список", async ({ mock, dashboardPage }) => {
+	await mock.route(MockedclubsList({
+		count: 0,
+		next: null,
+		previous: null,
+		results: [],
+	}));
+
+	await dashboardPage.open();
+	await dashboardPage.expectClubsCount(0);
+});
+```
+
+**Мок ошибки сервера** — `null` + статус 500:
+
+```ts
+import { MockedclubsList } from "../generated/api/Clubs";
+import { test } from "../fixtures/base";
+
+test("Клубы — бэк не отвечает", async ({ mock, dashboardPage }) => {
+	await mock.route(MockedclubsList(null, 500));
+
+	await dashboardPage.open();
+	await expect(
+		dashboardPage.page.getByText("Не удалось загрузить список клубов"),
+	).toBeVisible();
+});
+```
+
+**Мок с параметром** — передать `id` для детальных эндпоинтов:
+
+```ts
+import { MockedclubsRetrieve } from "../generated/api/Clubs";
+import { test } from "../fixtures/base";
+
+test("Клуб — страница клуба", async ({ mock, clubDetailPage }) => {
+	await mock.route(MockedclubsRetrieve(42, {
+		id: 42,
+		bookTitle: "Война и мир",
+		bookAuthors: "Л.Н. Толстой",
+		publicationYear: 1869,
+		description: "Роман-эпопея",
+		telegramChatLink: "https://t.me/war_and_peace",
+		owner: 1,
+		members: [],
+		reviews: [],
+		created: "2024-01-01T00:00:00Z",
+		modified: "2024-01-01T00:00:00Z",
+	}));
+
+	await clubDetailPage.open(42);
+	await clubDetailPage.expectTitle("Война и мир");
+});
+```
+
+#### Как найти нужный мок
+
+1. Открыть `generated/api/<Client>.ts` — там все экспортируемые `Mocked*` функции
+2. Имя функции = `Mocked` + тег + название операции из Swagger (см. JSDoc-комментарии над классом `Auth`, `Clubs`, `Users`, `Docs`)
+3. Тип тела аргумента `body` — в `generated/api/data-contracts.ts`
+4. Дефолтные значения — в `generated/api/fixtures.ts`
+
+Если нужен новый эндпоинт — добавить его в OpenAPI-схему бэкенда и перегенерировать: `npm run generate:api`.
+
+### Генерация API-клиентов
+
+API-клиенты генерируются из OpenAPI-схемы через `swagger-typescript-api`:
+
+```bash
+npm run generate:api
+```
+
+Что делает скрипт:
+1. Качает схему из `http://localhost:8000/api/v1/docs/schema/?format=json` (нужен запущенный бэкенд)
+2. Генерирует типизированные клиенты в `generated/api/` (Auth, Clubs, Users, Docs)
+3. Генерирует фикстуры в `generated/api/fixtures.ts` через `json-schema-faker`
+
+Структура `generated/api/`:
+- `data-contracts.ts` — TypeScript-типы для всех DTO
+- `fixtures.ts` — авто-сгенерированные моки для каждого типа
+- `http-client.ts` — базовый HTTP-клиент
+- `Auth.ts`, `Clubs.ts`, `Users.ts`, `Docs.ts` — клиенты по тегам + `Mocked*` функции
+
+Шаблоны для кастомизации генерации: `codegen/api-templates/`.
+
+### Параметризованные тесты
+
+Для тестирования одного сценария с набором данных используй `test.describe` + `forEach`:
+
+```ts
+test.describe("Создать клуб — Невалидный Telegram", () => {
+	const invalidLinks = [
+		"not-a-valid-url",
+		"https://google.com",
+		"t.me/abc",
+		"@something",
+	];
+
+	invalidLinks.forEach((link) => {
+		test(`"${link}"`, async ({ authorizedUser, createClubPage }) => {
+			await createClubPage.open();
+			await createClubPage.fillForm({
+				bookTitle: faker.book.title(),
+				bookAuthors: faker.person.fullName(),
+				publicationYear: faker.number.int({ min: 1900, max: 2025 }),
+				description: faker.lorem.sentence(),
+				telegramChatLink: link,
+			});
+			await createClubPage.submit();
+			await createClubPage.expectTelegramError();
+		});
+	});
+});
+```
+
+Правила:
+- `test.describe` группирует связанные кейсы
+- Каждый элемент массива — отдельный `test` с именем значения
+- Данные определяются снаружи `test.describe`, не внутри
+
+### Динамические локаторы в Page Objects
+
+Когда элемент определяется параметром, Page Object возвращает локатор через метод:
+
+```ts
+import type { Locator, Page } from "@playwright/test";
+
+export class DashboardPage {
+	constructor(public readonly page: Page) {}
+
+	readonly clubCard = (title: string): Locator =>
+		this.page.getByRole("heading", { name: title });
+
+	async expectClubVisible(title: string) {
+		await test.step("Проверить отображение клуба", async () => {
+			await expect(this.clubCard(title)).toBeVisible();
+		});
+	}
+}
+```
+
+Правила:
+- Метод возвращает `Locator`, не `Promise<Locator>`
+- Имя метода = сущность + параметр: `clubCard(title)`, `rowByIndex(index)`
+- Использовать динамический локатор только когда статический `readonly` не подходит
+
+### Allure HTML-отчёты
+
+Помимо стандартного Allure-репортинга, проект генерирует HTML-вложения через Nunjucks-шаблоны в `fixtures/templates/`:
+
+- `console_report.html` — все console-сообщения браузера с разбивкой по типам
+- `network_report.html` — все HTTP-ответы с заголовками и телами
+
+Шаблоны рендерятся в auto-fixtures (`consoleCapture`, `networkCapture`) и прикрепляются к Each teardown шагу Allure. Кастомизируются через файлы в `fixtures/templates/`.
 
 ## Code style
 
