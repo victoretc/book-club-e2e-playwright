@@ -11,43 +11,44 @@
  */
 
 import type { APIRequestContext, APIResponse } from "@playwright/test";
-import type {
-	PatchedUserRequest,
-	User,
-	UserRegister,
-	UserRegisterRequest,
-	UserRequest,
+import type { RouteConfig } from "../mock";
+import {
+  PatchedUserRequest,
+  User,
+  UserRegister,
+  UserRegisterRequest,
+  UserRequest,
 } from "./data-contracts";
 import { ApiError, type RequestOptions } from "./http-client";
 
 export class Users {
-	private request: APIRequestContext;
+  private request: APIRequestContext;
 
-	constructor(request: APIRequestContext) {
-		this.request = request;
-	}
+  constructor(request: APIRequestContext) {
+    this.request = request;
+  }
 
-	/**
-	 * No description
-	 *
-	 * @tags users
-	 * @name UsersMeRetrieve
-	 * @request GET:/api/v1/users/me/
-	 * @secure
-	 */
-	usersMeRetrieve = async (opts?: RequestOptions): Promise<User> => {
-		const response = await this.request.fetch(`/api/v1/users/me/`, {
-			method: "GET",
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
-		if (opts?.validateStatus !== false && response.status() >= 400) {
-			throw new ApiError(response.status(), await response.text());
-		}
-		return response.json();
-	};
+  /**
+   * No description
+   *
+   * @tags users
+   * @name UsersMeRetrieve
+   * @request GET:/api/v1/users/me/
+   * @secure
+   */
+  usersMeRetrieve = async (opts?: RequestOptions): Promise<User> => {
+    const response = await this.request.fetch(`/api/v1/users/me/`, {
+      method: "GET",
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
+    if (opts?.validateStatus !== false && response.status() >= 400) {
+      throw new ApiError(response.status(), await response.text());
+    }
+    return response.json();
+  };
 
-	/**
+  /**
  * No description
  * @raw
 
@@ -56,37 +57,37 @@ export class Users {
  * @request GET:/api/v1/users/me/
  * @secure
  */
-	usersMeRetrieveRaw = (opts?: RequestOptions): Promise<APIResponse> =>
-		this.request.fetch(`/api/v1/users/me/`, {
-			method: "GET",
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
-	/**
-	 * No description
-	 *
-	 * @tags users
-	 * @name UsersMeUpdate
-	 * @request PUT:/api/v1/users/me/
-	 * @secure
-	 */
-	usersMeUpdate = async (
-		data: UserRequest,
-		opts?: RequestOptions,
-	): Promise<User> => {
-		const response = await this.request.fetch(`/api/v1/users/me/`, {
-			method: "PUT",
-			data: data,
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
-		if (opts?.validateStatus !== false && response.status() >= 400) {
-			throw new ApiError(response.status(), await response.text());
-		}
-		return response.json();
-	};
+  usersMeRetrieveRaw = (opts?: RequestOptions): Promise<APIResponse> =>
+    this.request.fetch(`/api/v1/users/me/`, {
+      method: "GET",
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
+  /**
+   * No description
+   *
+   * @tags users
+   * @name UsersMeUpdate
+   * @request PUT:/api/v1/users/me/
+   * @secure
+   */
+  usersMeUpdate = async (
+    data: UserRequest,
+    opts?: RequestOptions,
+  ): Promise<User> => {
+    const response = await this.request.fetch(`/api/v1/users/me/`, {
+      method: "PUT",
+      data: data,
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
+    if (opts?.validateStatus !== false && response.status() >= 400) {
+      throw new ApiError(response.status(), await response.text());
+    }
+    return response.json();
+  };
 
-	/**
+  /**
  * No description
  * @raw
 
@@ -95,41 +96,41 @@ export class Users {
  * @request PUT:/api/v1/users/me/
  * @secure
  */
-	usersMeUpdateRaw = (
-		data: UserRequest,
-		opts?: RequestOptions,
-	): Promise<APIResponse> =>
-		this.request.fetch(`/api/v1/users/me/`, {
-			method: "PUT",
-			data: data,
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
-	/**
-	 * No description
-	 *
-	 * @tags users
-	 * @name UsersMePartialUpdate
-	 * @request PATCH:/api/v1/users/me/
-	 * @secure
-	 */
-	usersMePartialUpdate = async (
-		data: PatchedUserRequest,
-		opts?: RequestOptions,
-	): Promise<User> => {
-		const response = await this.request.fetch(`/api/v1/users/me/`, {
-			method: "PATCH",
-			data: data,
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
-		if (opts?.validateStatus !== false && response.status() >= 400) {
-			throw new ApiError(response.status(), await response.text());
-		}
-		return response.json();
-	};
+  usersMeUpdateRaw = (
+    data: UserRequest,
+    opts?: RequestOptions,
+  ): Promise<APIResponse> =>
+    this.request.fetch(`/api/v1/users/me/`, {
+      method: "PUT",
+      data: data,
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
+  /**
+   * No description
+   *
+   * @tags users
+   * @name UsersMePartialUpdate
+   * @request PATCH:/api/v1/users/me/
+   * @secure
+   */
+  usersMePartialUpdate = async (
+    data: PatchedUserRequest,
+    opts?: RequestOptions,
+  ): Promise<User> => {
+    const response = await this.request.fetch(`/api/v1/users/me/`, {
+      method: "PATCH",
+      data: data,
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
+    if (opts?.validateStatus !== false && response.status() >= 400) {
+      throw new ApiError(response.status(), await response.text());
+    }
+    return response.json();
+  };
 
-	/**
+  /**
  * No description
  * @raw
 
@@ -138,36 +139,36 @@ export class Users {
  * @request PATCH:/api/v1/users/me/
  * @secure
  */
-	usersMePartialUpdateRaw = (
-		data: PatchedUserRequest,
-		opts?: RequestOptions,
-	): Promise<APIResponse> =>
-		this.request.fetch(`/api/v1/users/me/`, {
-			method: "PATCH",
-			data: data,
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
-	/**
-	 * No description
-	 *
-	 * @tags users
-	 * @name UsersMeDestroy
-	 * @request DELETE:/api/v1/users/me/
-	 * @secure
-	 */
-	usersMeDestroy = async (opts?: RequestOptions): Promise<void> => {
-		const response = await this.request.fetch(`/api/v1/users/me/`, {
-			method: "DELETE",
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
-		if (opts?.validateStatus !== false && response.status() >= 400) {
-			throw new ApiError(response.status(), await response.text());
-		}
-	};
+  usersMePartialUpdateRaw = (
+    data: PatchedUserRequest,
+    opts?: RequestOptions,
+  ): Promise<APIResponse> =>
+    this.request.fetch(`/api/v1/users/me/`, {
+      method: "PATCH",
+      data: data,
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
+  /**
+   * No description
+   *
+   * @tags users
+   * @name UsersMeDestroy
+   * @request DELETE:/api/v1/users/me/
+   * @secure
+   */
+  usersMeDestroy = async (opts?: RequestOptions): Promise<void> => {
+    const response = await this.request.fetch(`/api/v1/users/me/`, {
+      method: "DELETE",
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
+    if (opts?.validateStatus !== false && response.status() >= 400) {
+      throw new ApiError(response.status(), await response.text());
+    }
+  };
 
-	/**
+  /**
  * No description
  * @raw
 
@@ -176,37 +177,37 @@ export class Users {
  * @request DELETE:/api/v1/users/me/
  * @secure
  */
-	usersMeDestroyRaw = (opts?: RequestOptions): Promise<APIResponse> =>
-		this.request.fetch(`/api/v1/users/me/`, {
-			method: "DELETE",
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
-	/**
-	 * No description
-	 *
-	 * @tags users
-	 * @name UsersRegisterCreate
-	 * @request POST:/api/v1/users/register/
-	 * @secure
-	 */
-	usersRegisterCreate = async (
-		data: UserRegisterRequest,
-		opts?: RequestOptions,
-	): Promise<UserRegister> => {
-		const response = await this.request.fetch(`/api/v1/users/register/`, {
-			method: "POST",
-			data: data,
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
-		if (opts?.validateStatus !== false && response.status() >= 400) {
-			throw new ApiError(response.status(), await response.text());
-		}
-		return response.json();
-	};
+  usersMeDestroyRaw = (opts?: RequestOptions): Promise<APIResponse> =>
+    this.request.fetch(`/api/v1/users/me/`, {
+      method: "DELETE",
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
+  /**
+   * No description
+   *
+   * @tags users
+   * @name UsersRegisterCreate
+   * @request POST:/api/v1/users/register/
+   * @secure
+   */
+  usersRegisterCreate = async (
+    data: UserRegisterRequest,
+    opts?: RequestOptions,
+  ): Promise<UserRegister> => {
+    const response = await this.request.fetch(`/api/v1/users/register/`, {
+      method: "POST",
+      data: data,
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
+    if (opts?.validateStatus !== false && response.status() >= 400) {
+      throw new ApiError(response.status(), await response.text());
+    }
+    return response.json();
+  };
 
-	/**
+  /**
  * No description
  * @raw
 
@@ -215,14 +216,45 @@ export class Users {
  * @request POST:/api/v1/users/register/
  * @secure
  */
-	usersRegisterCreateRaw = (
-		data: UserRegisterRequest,
-		opts?: RequestOptions,
-	): Promise<APIResponse> =>
-		this.request.fetch(`/api/v1/users/register/`, {
-			method: "POST",
-			data: data,
-			timeout: opts?.timeout,
-			headers: opts?.headers,
-		});
+  usersRegisterCreateRaw = (
+    data: UserRegisterRequest,
+    opts?: RequestOptions,
+  ): Promise<APIResponse> =>
+    this.request.fetch(`/api/v1/users/register/`, {
+      method: "POST",
+      data: data,
+      timeout: opts?.timeout,
+      headers: opts?.headers,
+    });
 }
+
+export const MockedusersMeRetrieve = (
+  body: User | null = null,
+): RouteConfig => ({
+  url: `/api/v1/users/me/`,
+  method: "GET",
+  body,
+});
+export const MockedusersMeUpdate = (body: User | null = null): RouteConfig => ({
+  url: `/api/v1/users/me/`,
+  method: "PUT",
+  body,
+});
+export const MockedusersMePartialUpdate = (
+  body: User | null = null,
+): RouteConfig => ({
+  url: `/api/v1/users/me/`,
+  method: "PATCH",
+  body,
+});
+export const MockedusersMeDestroy = (): RouteConfig => ({
+  url: `/api/v1/users/me/`,
+  method: "DELETE",
+});
+export const MockedusersRegisterCreate = (
+  body: UserRegister | null = null,
+): RouteConfig => ({
+  url: `/api/v1/users/register/`,
+  method: "POST",
+  body,
+});

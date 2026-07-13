@@ -1,0 +1,49 @@
+<%
+const routes = it.route.routes;
+const { _ } = it.utils;
+%>
+<% for (const route of routes) { %>
+<%
+const methodName = route.routeName.usage;
+const httpMethod = _.upperCase(route.request.method);
+const respBody = route.responseBodySchema;
+const responseType = respBody && respBody.type;
+const isVoid = !responseType || responseType === "void";
+const hasAngleBrackets = responseType && (responseType.includes("<") || responseType.includes("&lt;"));
+const canMock = !isVoid && !hasAngleBrackets;
+const pathParams = _.values(route.request.parameters);
+const path = route.request.path;
+%>
+<% if (canMock) { %>
+export const Mocked<%= methodName %> = (
+<% for (const param of pathParams) { %>
+    <%= param.name %>: number,
+<% } %>
+    body: <%= responseType %> | null = null,
+): RouteConfig => ({
+    url: `<%~ path %>`,
+    method: "<%= httpMethod %>",
+    body,
+});
+<% } else if (!isVoid) { %>
+export const Mocked<%= methodName %> = (
+<% for (const param of pathParams) { %>
+    <%= param.name %>: number,
+<% } %>
+    body: Record<string, any> | null = null,
+): RouteConfig => ({
+    url: `<%~ path %>`,
+    method: "<%= httpMethod %>",
+    body,
+});
+<% } else { %>
+export const Mocked<%= methodName %> = (
+<% for (const param of pathParams) { %>
+    <%= param.name %>: number,
+<% } %>
+): RouteConfig => ({
+    url: `<%~ path %>`,
+    method: "<%= httpMethod %>",
+});
+<% } %>
+<% } %>

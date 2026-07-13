@@ -11,25 +11,25 @@
  */
 
 export const ContentType = {
-	Json: "application/json",
-	FormData: "multipart/form-data",
-	UrlEncoded: "application/x-www-form-urlencoded",
-	Text: "text/plain",
+  Json: "application/json",
+  FormData: "multipart/form-data",
+  UrlEncoded: "application/x-www-form-urlencoded",
+  Text: "text/plain",
 } as const;
 export type ContentType = (typeof ContentType)[keyof typeof ContentType];
 
 export type RequestOptions = {
-	timeout?: number;
-	headers?: Record<string, string>;
-	validateStatus?: boolean;
+  timeout?: number;
+  headers?: Record<string, string>;
+  validateStatus?: boolean;
 };
 
 export class ApiError extends Error {
-	constructor(
-		public status: number,
-		body: string,
-	) {
-		super(`API error ${status}: ${body}`);
-		this.name = "ApiError";
-	}
+  constructor(
+    public status: number,
+    body: string,
+  ) {
+    super(`API error ${status}: ${body}`);
+    this.name = "ApiError";
+  }
 }
