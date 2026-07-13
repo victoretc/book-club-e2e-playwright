@@ -292,40 +292,51 @@ export class Auth {
 
 export const MockedauthCodeCreate = (
   body: RequestCode | null = fixtures.RequestCode,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/auth/code/`,
   method: "POST",
   body,
+  status,
 });
 export const MockedauthCodeRetrieveCreate = (
   body: RetrieveCodeResponse | null = fixtures.RetrieveCodeResponse,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/auth/code/retrieve/`,
   method: "POST",
   body,
+  status,
 });
 export const MockedauthCodeVerifyCreate = (
   body: VerifyCode | null = fixtures.VerifyCode,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/auth/code/verify/`,
   method: "POST",
   body,
+  status,
 });
-export const MockedauthLogoutCreate = (): RouteConfig => ({
+export const MockedauthLogoutCreate = (status: number = 200): RouteConfig => ({
   url: `/api/v1/auth/logout/`,
   method: "POST",
+  status,
 });
 export const MockedauthTokenCreate = (
   body: TokenObtainPairWithProperMessage | null = fixtures.TokenObtainPairWithProperMessage,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/auth/token/`,
   method: "POST",
   body,
+  status,
 });
 export const MockedauthTokenRefreshCreate = (
   body: TokenRefresh | null = fixtures.TokenRefresh,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/auth/token/refresh/`,
   method: "POST",
   body,
+  status,
 });

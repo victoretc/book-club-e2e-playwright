@@ -1,7 +1,7 @@
 import { test as base } from "@playwright/test";
-import { Auth } from "../src/api/Auth";
-import { Clubs } from "../src/api/Clubs";
-import { Users } from "../src/api/Users";
+import { Auth } from "../generated/api/Auth";
+import { Clubs } from "../generated/api/Clubs";
+import { Users } from "../generated/api/Users";
 
 type Api = {
 	auth: Auth;

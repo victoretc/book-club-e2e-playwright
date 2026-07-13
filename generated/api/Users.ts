@@ -231,33 +231,42 @@ export class Users {
 
 export const MockedusersMeRetrieve = (
   body: User | null = fixtures.User,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/users/me/`,
   method: "GET",
   body,
+  status,
 });
 export const MockedusersMeUpdate = (
   body: User | null = fixtures.User,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/users/me/`,
   method: "PUT",
   body,
+  status,
 });
 export const MockedusersMePartialUpdate = (
   body: User | null = fixtures.User,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/users/me/`,
   method: "PATCH",
   body,
+  status,
 });
-export const MockedusersMeDestroy = (): RouteConfig => ({
+export const MockedusersMeDestroy = (status: number = 204): RouteConfig => ({
   url: `/api/v1/users/me/`,
   method: "DELETE",
+  status,
 });
 export const MockedusersRegisterCreate = (
   body: UserRegister | null = fixtures.UserRegister,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/users/register/`,
   method: "POST",
   body,
+  status,
 });

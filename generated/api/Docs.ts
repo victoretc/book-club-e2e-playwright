@@ -272,8 +272,10 @@ export class Docs {
 
 export const MockeddocsSchemaRetrieve = (
   body: Record<string, any> | null = null,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/docs/schema/`,
   method: "GET",
   body,
+  status,
 });

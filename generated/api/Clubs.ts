@@ -653,93 +653,129 @@ export class Clubs {
 
 export const MockedclubsList = (
   body: PaginatedClubList | null = fixtures.PaginatedClubList,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/clubs/`,
   method: "GET",
   body,
+  status,
 });
 export const MockedclubsCreate = (
   body: Club | null = fixtures.Club,
+  status: number = 201,
 ): RouteConfig => ({
   url: `/api/v1/clubs/`,
   method: "POST",
   body,
+  status,
 });
 export const MockedclubsRetrieve = (
   id: number,
   body: Club | null = fixtures.Club,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/clubs/${id}/`,
   method: "GET",
   body,
+  status,
 });
 export const MockedclubsUpdate = (
   id: number,
   body: Club | null = fixtures.Club,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/clubs/${id}/`,
   method: "PUT",
   body,
+  status,
 });
 export const MockedclubsPartialUpdate = (
   id: number,
   body: Club | null = fixtures.Club,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/clubs/${id}/`,
   method: "PATCH",
   body,
+  status,
 });
-export const MockedclubsDestroy = (id: number): RouteConfig => ({
+export const MockedclubsDestroy = (
+  id: number,
+  status: number = 204,
+): RouteConfig => ({
   url: `/api/v1/clubs/${id}/`,
   method: "DELETE",
+  status,
 });
-export const MockedclubsMembersMeCreate = (id: number): RouteConfig => ({
+export const MockedclubsMembersMeCreate = (
+  id: number,
+  status: number = 204,
+): RouteConfig => ({
   url: `/api/v1/clubs/${id}/members/me/`,
   method: "POST",
+  status,
 });
-export const MockedclubsMembersMeDestroy = (id: number): RouteConfig => ({
+export const MockedclubsMembersMeDestroy = (
+  id: number,
+  status: number = 204,
+): RouteConfig => ({
   url: `/api/v1/clubs/${id}/members/me/`,
   method: "DELETE",
+  status,
 });
 export const MockedclubsReviewsList = (
   body: PaginatedBookReviewList | null = fixtures.PaginatedBookReviewList,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/`,
   method: "GET",
   body,
+  status,
 });
 export const MockedclubsReviewsCreate = (
   body: BookReview | null = fixtures.BookReview,
+  status: number = 201,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/`,
   method: "POST",
   body,
+  status,
 });
 export const MockedclubsReviewsRetrieve = (
   id: number,
   body: BookReview | null = fixtures.BookReview,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/${id}/`,
   method: "GET",
   body,
+  status,
 });
 export const MockedclubsReviewsUpdate = (
   id: number,
   body: BookReview | null = fixtures.BookReview,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/${id}/`,
   method: "PUT",
   body,
+  status,
 });
 export const MockedclubsReviewsPartialUpdate = (
   id: number,
   body: BookReview | null = fixtures.BookReview,
+  status: number = 200,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/${id}/`,
   method: "PATCH",
   body,
+  status,
 });
-export const MockedclubsReviewsDestroy = (id: number): RouteConfig => ({
+export const MockedclubsReviewsDestroy = (
+  id: number,
+  status: number = 204,
+): RouteConfig => ({
   url: `/api/v1/clubs/reviews/${id}/`,
   method: "DELETE",
+  status,
 });

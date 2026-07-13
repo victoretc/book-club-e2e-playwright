@@ -13,6 +13,8 @@ const hasAngleBrackets = responseType && (responseType.includes("<") || response
 const canMock = !isVoid && !hasAngleBrackets;
 const pathParams = _.values(route.request.parameters);
 const path = route.request.path;
+const successResponse = _.find(route.raw.responsesTypes, { isSuccess: true });
+const defaultStatus = successResponse ? successResponse.status : 200;
 %>
 <% if (canMock) { %>
 export const Mocked<%= methodName %> = (
@@ -20,10 +22,12 @@ export const Mocked<%= methodName %> = (
     <%= param.name %>: number,
 <% } %>
     body: <%= responseType %> | null = fixtures.<%= responseType %>,
+    status: number = <%= defaultStatus %>,
 ): RouteConfig => ({
     url: `<%~ path %>`,
     method: "<%= httpMethod %>",
     body,
+    status,
 });
 <% } else if (!isVoid) { %>
 export const Mocked<%= methodName %> = (
@@ -31,19 +35,23 @@ export const Mocked<%= methodName %> = (
     <%= param.name %>: number,
 <% } %>
     body: Record<string, any> | null = null,
+    status: number = <%= defaultStatus %>,
 ): RouteConfig => ({
     url: `<%~ path %>`,
     method: "<%= httpMethod %>",
     body,
+    status,
 });
 <% } else { %>
 export const Mocked<%= methodName %> = (
 <% for (const param of pathParams) { %>
     <%= param.name %>: number,
 <% } %>
+    status: number = <%= defaultStatus %>,
 ): RouteConfig => ({
     url: `<%~ path %>`,
     method: "<%= httpMethod %>",
+    status,
 });
 <% } %>
 <% } %>

@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!fixtures/templates", "!src/api"]
+		"includes": ["**", "!fixtures/templates", "!generated/api"]
 	},
 	"formatter": {
 		"enabled": true,

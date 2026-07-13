@@ -8,7 +8,7 @@
 		"lint": "npx @biomejs/biome lint --write",
 		"e2e": "npx playwright test",
 		"typecheck": "tsc --noEmit",
-		"generate:api": "mkdir -p src && curl -s http://localhost:8000/api/v1/docs/schema/?format=json > src/openapi-schema.json && npx swagger-typescript-api generate --modular --module-name-first-tag --enum-style const --templates ./api-templates --output ./src/api --name index --path src/openapi-schema.json && node scripts/generate-fixtures.mjs"
+		"generate:api": "mkdir -p generated && curl -s http://localhost:8000/api/v1/docs/schema/?format=json > generated/openapi-schema.json && npx swagger-typescript-api generate --modular --module-name-first-tag --enum-style const --templates ./codegen/api-templates --output ./generated/api --name index --path generated/openapi-schema.json && node codegen/generate-fixtures.mjs"
 	},
 	"keywords": [],
 	"author": "",

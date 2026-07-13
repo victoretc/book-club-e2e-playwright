@@ -4,8 +4,8 @@ import { fileURLToPath } from "node:url";
 import { generate } from "json-schema-faker";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const schemaPath = join(__dirname, "..", "src", "openapi-schema.json");
-const outputPath = join(__dirname, "..", "src", "api", "fixtures.ts");
+const schemaPath = join(__dirname, "..", "generated", "openapi-schema.json");
+const outputPath = join(__dirname, "..", "generated", "api", "fixtures.ts");
 
 const schema = JSON.parse(readFileSync(schemaPath, "utf-8"));
 const schemas = schema.components?.schemas || {};
@@ -33,7 +33,7 @@ for (const [name, jsonSchema] of Object.entries(schemas)) {
 		failOnInvalidTypes: false,
 		defaultInvalidTypeProduct: null,
 		refResolver,
-		maxItems: 1
+		maxItems: 1,
 	});
 }
 
