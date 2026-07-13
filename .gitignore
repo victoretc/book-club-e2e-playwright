@@ -1,4 +1,7 @@
 
+# Generated schema
+src/openapi-schema.json
+
 # Playwright
 node_modules/
 /test-results/

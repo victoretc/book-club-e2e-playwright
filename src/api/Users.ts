@@ -19,6 +19,7 @@ import {
   UserRegisterRequest,
   UserRequest,
 } from "./data-contracts";
+import { fixtures } from "./fixtures";
 import { ApiError, type RequestOptions } from "./http-client";
 
 export class Users {
@@ -229,19 +230,21 @@ export class Users {
 }
 
 export const MockedusersMeRetrieve = (
-  body: User | null = null,
+  body: User | null = fixtures.User,
 ): RouteConfig => ({
   url: `/api/v1/users/me/`,
   method: "GET",
   body,
 });
-export const MockedusersMeUpdate = (body: User | null = null): RouteConfig => ({
+export const MockedusersMeUpdate = (
+  body: User | null = fixtures.User,
+): RouteConfig => ({
   url: `/api/v1/users/me/`,
   method: "PUT",
   body,
 });
 export const MockedusersMePartialUpdate = (
-  body: User | null = null,
+  body: User | null = fixtures.User,
 ): RouteConfig => ({
   url: `/api/v1/users/me/`,
   method: "PATCH",
@@ -252,7 +255,7 @@ export const MockedusersMeDestroy = (): RouteConfig => ({
   method: "DELETE",
 });
 export const MockedusersRegisterCreate = (
-  body: UserRegister | null = null,
+  body: UserRegister | null = fixtures.UserRegister,
 ): RouteConfig => ({
   url: `/api/v1/users/register/`,
   method: "POST",

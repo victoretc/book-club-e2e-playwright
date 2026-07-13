@@ -22,6 +22,7 @@ import {
   PatchedBookReviewRequest,
   PatchedClubRequest,
 } from "./data-contracts";
+import { fixtures } from "./fixtures";
 import { ApiError, type RequestOptions } from "./http-client";
 
 export class Clubs {
@@ -651,20 +652,22 @@ export class Clubs {
 }
 
 export const MockedclubsList = (
-  body: PaginatedClubList | null = null,
+  body: PaginatedClubList | null = fixtures.PaginatedClubList,
 ): RouteConfig => ({
   url: `/api/v1/clubs/`,
   method: "GET",
   body,
 });
-export const MockedclubsCreate = (body: Club | null = null): RouteConfig => ({
+export const MockedclubsCreate = (
+  body: Club | null = fixtures.Club,
+): RouteConfig => ({
   url: `/api/v1/clubs/`,
   method: "POST",
   body,
 });
 export const MockedclubsRetrieve = (
   id: number,
-  body: Club | null = null,
+  body: Club | null = fixtures.Club,
 ): RouteConfig => ({
   url: `/api/v1/clubs/${id}/`,
   method: "GET",
@@ -672,7 +675,7 @@ export const MockedclubsRetrieve = (
 });
 export const MockedclubsUpdate = (
   id: number,
-  body: Club | null = null,
+  body: Club | null = fixtures.Club,
 ): RouteConfig => ({
   url: `/api/v1/clubs/${id}/`,
   method: "PUT",
@@ -680,7 +683,7 @@ export const MockedclubsUpdate = (
 });
 export const MockedclubsPartialUpdate = (
   id: number,
-  body: Club | null = null,
+  body: Club | null = fixtures.Club,
 ): RouteConfig => ({
   url: `/api/v1/clubs/${id}/`,
   method: "PATCH",
@@ -699,14 +702,14 @@ export const MockedclubsMembersMeDestroy = (id: number): RouteConfig => ({
   method: "DELETE",
 });
 export const MockedclubsReviewsList = (
-  body: PaginatedBookReviewList | null = null,
+  body: PaginatedBookReviewList | null = fixtures.PaginatedBookReviewList,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/`,
   method: "GET",
   body,
 });
 export const MockedclubsReviewsCreate = (
-  body: BookReview | null = null,
+  body: BookReview | null = fixtures.BookReview,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/`,
   method: "POST",
@@ -714,7 +717,7 @@ export const MockedclubsReviewsCreate = (
 });
 export const MockedclubsReviewsRetrieve = (
   id: number,
-  body: BookReview | null = null,
+  body: BookReview | null = fixtures.BookReview,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/${id}/`,
   method: "GET",
@@ -722,7 +725,7 @@ export const MockedclubsReviewsRetrieve = (
 });
 export const MockedclubsReviewsUpdate = (
   id: number,
-  body: BookReview | null = null,
+  body: BookReview | null = fixtures.BookReview,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/${id}/`,
   method: "PUT",
@@ -730,7 +733,7 @@ export const MockedclubsReviewsUpdate = (
 });
 export const MockedclubsReviewsPartialUpdate = (
   id: number,
-  body: BookReview | null = null,
+  body: BookReview | null = fixtures.BookReview,
 ): RouteConfig => ({
   url: `/api/v1/clubs/reviews/${id}/`,
   method: "PATCH",

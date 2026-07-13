@@ -25,6 +25,7 @@ import {
   VerifyCode,
   VerifyCodeRequest,
 } from "./data-contracts";
+import { fixtures } from "./fixtures";
 import { ApiError, type RequestOptions } from "./http-client";
 
 export class Auth {
@@ -290,21 +291,21 @@ export class Auth {
 }
 
 export const MockedauthCodeCreate = (
-  body: RequestCode | null = null,
+  body: RequestCode | null = fixtures.RequestCode,
 ): RouteConfig => ({
   url: `/api/v1/auth/code/`,
   method: "POST",
   body,
 });
 export const MockedauthCodeRetrieveCreate = (
-  body: RetrieveCodeResponse | null = null,
+  body: RetrieveCodeResponse | null = fixtures.RetrieveCodeResponse,
 ): RouteConfig => ({
   url: `/api/v1/auth/code/retrieve/`,
   method: "POST",
   body,
 });
 export const MockedauthCodeVerifyCreate = (
-  body: VerifyCode | null = null,
+  body: VerifyCode | null = fixtures.VerifyCode,
 ): RouteConfig => ({
   url: `/api/v1/auth/code/verify/`,
   method: "POST",
@@ -315,14 +316,14 @@ export const MockedauthLogoutCreate = (): RouteConfig => ({
   method: "POST",
 });
 export const MockedauthTokenCreate = (
-  body: TokenObtainPairWithProperMessage | null = null,
+  body: TokenObtainPairWithProperMessage | null = fixtures.TokenObtainPairWithProperMessage,
 ): RouteConfig => ({
   url: `/api/v1/auth/token/`,
   method: "POST",
   body,
 });
 export const MockedauthTokenRefreshCreate = (
-  body: TokenRefresh | null = null,
+  body: TokenRefresh | null = fixtures.TokenRefresh,
 ): RouteConfig => ({
   url: `/api/v1/auth/token/refresh/`,
   method: "POST",
